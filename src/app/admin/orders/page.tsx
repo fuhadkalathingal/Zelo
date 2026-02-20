@@ -48,7 +48,7 @@ export default function AdminOrdersPage() {
                             <div key={order.orderId} className="p-4 flex items-center gap-4 hover:bg-emerald-50/50 transition-colors">
                                 <input
                                     type="checkbox"
-                                    className="w-5 h-5 text-emerald-500 rounded focus:ring-emerald-500"
+                                    className="w-5 h-5 text-emerald-500 rounded focus:ring-emerald-500 border-gray-300"
                                     checked={selectedOrders.includes(order.orderId)}
                                     onChange={(e) => {
                                         const checked = e.target.checked;
@@ -56,8 +56,8 @@ export default function AdminOrdersPage() {
                                     }}
                                 />
                                 <div className="flex-1">
-                                    <div className="font-bold text-gray-800">{order.orderId}</div>
-                                    <div className="text-sm text-gray-500">{order.deliveryAddress.area} • ₹{order.totalAmount} • {order.paymentMethod}</div>
+                                    <div className="font-extrabold text-gray-900">{order.orderId}</div>
+                                    <div className="text-sm font-semibold text-gray-800">{order.deliveryAddress.area} • <span className="text-gray-900">₹{order.totalAmount}</span> • {order.paymentMethod}</div>
                                 </div>
                                 <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">{order.status}</span>
                             </div>

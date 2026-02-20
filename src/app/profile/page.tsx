@@ -165,7 +165,7 @@ export default function ProfilePage() {
                                             <span className="font-extrabold text-sm text-gray-900">{addr.type}</span>
                                             {idx === 0 && <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Default</span>}
                                         </div>
-                                        <p className="text-xs font-semibold text-gray-600 leading-relaxed pr-8">
+                                        <p className="text-xs font-bold text-gray-800 leading-relaxed pr-8">
                                             {addr.flat ? `${addr.flat}, ` : ''}{addr.area}
                                         </p>
                                     </div>

@@ -144,10 +144,10 @@ export default function CheckoutPage() {
                     </div>
 
                     {user?.savedAddresses?.[0] ? (
-                        <p className="text-sm font-medium text-gray-700 p-4 border border-gray-100 rounded-xl bg-gray-50/50 leading-relaxed shadow-inner">
+                        <p className="text-sm font-semibold text-gray-900 p-4 border border-gray-100 rounded-xl bg-gray-50/50 leading-relaxed shadow-inner">
                             {user.savedAddresses[0].flat ? `${user.savedAddresses[0].flat}, ` : ''}{user.savedAddresses[0].area}
                             <br />
-                            Contact: {user.phone}
+                            Contact: <span className="font-bold text-gray-900">{user.phone}</span>
                         </p>
                     ) : (
                         <p className="text-sm font-medium text-orange-600 p-4 border border-orange-100 rounded-xl bg-orange-50 mb-2">
@@ -163,12 +163,12 @@ export default function CheckoutPage() {
                     </h3>
                     <div className="space-y-3">
                         {items.map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-lg">
+                            <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-lg border border-gray-100/50">
                                 <div className="flex items-center gap-3">
                                     <div className="bg-white border border-gray-100 w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm">{item.imageUrl}</div>
                                     <div>
-                                        <p className="font-bold text-xs text-gray-900">{item.name}</p>
-                                        <p className="text-[10px] text-gray-500">{item.unit} x {item.quantity}</p>
+                                        <p className="font-bold text-sm text-gray-900">{item.name}</p>
+                                        <p className="text-xs font-semibold text-gray-700">{item.unit} x {item.quantity}</p>
                                     </div>
                                 </div>
                                 <span className="font-extrabold text-sm text-gray-900">₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
