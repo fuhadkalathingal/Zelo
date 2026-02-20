@@ -18,6 +18,21 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Firebase env setup (Netlify/GitHub)
+
+This app expects the following public Firebase variables. Configure them in your deployment provider
+environment settings (Netlify/Vercel/GitHub Actions) because `.env.local` is gitignored:
+
+```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCrOc8NrzGf5zmJM0lOTyk1o2AoQ1vQk00
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=zelo-webapp.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=zelo-webapp
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=zelo-webapp.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=941028200648
+NEXT_PUBLIC_FIREBASE_APP_ID=1:941028200648:web:cd225d541adc7feccdd5fd
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-VJ768DDNGL
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

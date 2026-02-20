@@ -17,7 +17,7 @@ export default function BottomNav() {
         { name: 'Search', path: '/search', icon: Search },
         { name: 'Categories', path: '/categories', icon: LayoutGrid },
         { name: 'Cart', path: '/cart', icon: ShoppingBag, badge: cartItemCount },
-        { name: 'Profile', path: '/login', icon: User },
+        { name: 'Profile', path: '/profile', icon: User },
     ];
 
     return (
