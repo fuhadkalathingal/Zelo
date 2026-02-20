@@ -1,33 +1,11 @@
 "use client";
 
 import { useCartStore } from '@/store/useCartStore';
-import { Product } from '@/types';
-import { Plus, Minus, Search, Clock, Users, Leaf, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Plus, Minus, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
-const MOCK_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Farm Fresh Tomato (Hybrid)', category: 'Fresh Vegetables', price: 24, discountPrice: 18, imageUrl: '🍅', inStock: true, unit: '500 g' },
-  { id: 'p2', name: 'Red Onions', category: 'Fresh Vegetables', price: 40, discountPrice: 25, imageUrl: '🧅', inStock: true, unit: '1 kg' },
-  { id: 'p3', name: 'Fresh Harvest Potato', category: 'Fresh Vegetables', price: 45, discountPrice: 30, imageUrl: '🥔', inStock: true, unit: '1 kg' },
-  { id: 'p4', name: 'Amul Taaza Milk', category: 'Dairy & Bread', price: 25, discountPrice: 24, imageUrl: '🥛', inStock: true, unit: '500 ml' },
-  { id: 'p5', name: 'Aashirvaad Shudh Chakki Atta', category: 'Atta, Rice & Dals', price: 295, discountPrice: 250, imageUrl: '🌾', inStock: true, unit: '5 kg' },
-  { id: 'p6', name: 'Britannia Good Day Cashew', category: 'Snacks', price: 20, imageUrl: '🍪', inStock: true, unit: '60 g' },
-];
-
-const CATEGORIES = [
-  { name: 'Fruits & Vegetables', icon: '🥦' },
-  { name: 'Dairy, Bread & Eggs', icon: '🍞' },
-  { name: 'Atta, Rice, Oil & Dals', icon: '🌾' },
-  { name: 'Meat, Fish & Eggs', icon: '🍗' },
-  { name: 'Masala & Dry Fruits', icon: '🌶️' },
-  { name: 'Breakfast & Sauces', icon: '🥣' },
-  { name: 'Packaged Food', icon: '🥫' },
-  { name: 'Tea, Coffee & More', icon: '☕' },
-  { name: 'Ice Creams & More', icon: '🍦' },
-  { name: 'Frozen Food', icon: '🧊' },
-];
+import { CATEGORIES, PRODUCTS } from '@/lib/catalog';
 
 export default function HomePage() {
   const { items, addItem, updateQuantity } = useCartStore();
@@ -43,7 +21,7 @@ export default function HomePage() {
       const now = new Date();
       const currentHour = now.getHours();
 
-      let target = new Date(now);
+      const target = new Date(now);
 
       if (currentHour < 11) {
         setBatchName('LUNCH BATCH');
@@ -124,7 +102,7 @@ export default function HomePage() {
 
         {/* Product Sections */}
         {['Fresh Vegetables', 'Dairy & Bread'].map((sectionCategory) => {
-          const sectionProducts = MOCK_PRODUCTS.filter(p => p.category === sectionCategory || (sectionCategory === 'Dairy & Bread' && p.category.includes('Dairy')));
+          const sectionProducts = PRODUCTS.filter((p) => p.category === sectionCategory || (sectionCategory === 'Dairy & Bread' && p.category.includes('Dairy')));
           if (sectionProducts.length === 0) return null;
 
           let sectionIcon = '🥦';

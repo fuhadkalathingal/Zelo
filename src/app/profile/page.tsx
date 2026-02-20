@@ -176,6 +176,15 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Actions */}
+                <div className="pt-2">
+                    <button
+                        onClick={() => router.push('/orders')}
+                        className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 font-bold py-4 rounded-2xl transition-all"
+                    >
+                        View Order History
+                    </button>
+                </div>
+
                 <div className="pt-4">
                     <button
                         onClick={handleLogout}
