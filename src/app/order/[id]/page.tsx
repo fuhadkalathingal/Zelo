@@ -128,15 +128,15 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     </h3>
                     <div className="space-y-3">
                         {currentOrder.items.map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl">
+                            <div key={item.productId} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl">
                                 <div className="flex items-center gap-3">
                                     <span className="text-2xl w-8 h-8 flex items-center justify-center">{item.imageUrl}</span>
                                     <div>
                                         <p className="font-bold text-xs text-gray-900">{item.name}</p>
-                                        <p className="text-[10px] text-gray-500 font-semibold">{item.unit} x {item.quantity}</p>
+                                        <p className="text-[10px] text-gray-500 font-semibold">{item.unit} x {item.qty}</p>
                                     </div>
                                 </div>
-                                <span className="font-extrabold text-sm text-gray-900">₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
+                                <span className="font-extrabold text-sm text-gray-900">₹{(item.price * item.qty).toFixed(2)}</span>
                             </div>
                         ))}
                     </div>

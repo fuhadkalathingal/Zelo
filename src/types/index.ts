@@ -25,6 +25,7 @@ export interface UserProfile {
     photoURL?: string;
     role: UserRole;
     savedAddresses: Address[];
+    orders?: Order[];
     createdAt: string;
 }
 
@@ -53,6 +54,9 @@ export interface OrderItem {
     productId: string;
     qty: number;
     price: number;
+    name?: string;
+    imageUrl?: string;
+    unit?: string;
 }
 
 export interface Order {

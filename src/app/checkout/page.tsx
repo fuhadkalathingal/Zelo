@@ -2,29 +2,18 @@
 
 import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
-<<<<<<< HEAD
 import { ChevronLeft, MapPin, ArrowRight, Clock, ShieldCheck, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, collection } from 'firebase/firestore';
-=======
-import { ChevronLeft, MapPin, ArrowRight, Clock, ShieldCheck } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { useOrderStore } from '@/store/useOrderStore';
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
+import { BatchType, OrderStatus } from '@/types';
 
 export default function CheckoutPage() {
     const router = useRouter();
     const { items, getCartTotal, clearCart } = useCartStore();
     const { user, setUser } = useAuthStore();
-<<<<<<< HEAD
-=======
-    const placeOrder = useOrderStore((state) => state.placeOrder);
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
+
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [batchInfo, setBatchInfo] = useState<{ title: string; time: string; batchType: 'Morning' | 'Evening' }>({
@@ -33,16 +22,13 @@ export default function CheckoutPage() {
         batchType: 'Morning',
     });
     const [addressLoading, setAddressLoading] = useState(false);
-<<<<<<< HEAD
     const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'COD'>('UPI');
-=======
     const [flat, setFlat] = useState('');
     const [area, setArea] = useState('');
     const [landmark, setLandmark] = useState('');
     const [pincode, setPincode] = useState('');
     const [latitude, setLatitude] = useState<number | undefined>(undefined);
     const [longitude, setLongitude] = useState<number | undefined>(undefined);
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
 
     const total = getCartTotal();
 
@@ -77,6 +63,10 @@ export default function CheckoutPage() {
             alert('Geolocation is not supported by your browser.');
             return;
         }
+        if (!user) {
+            alert('Please login to detect your location.');
+            return;
+        }
 
         setAddressLoading(true);
         navigator.geolocation.getCurrentPosition(
@@ -87,8 +77,6 @@ export default function CheckoutPage() {
                 try {
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
                     const data = await response.json();
-<<<<<<< HEAD
-
                     if (data && data.display_name) {
                         const userDocRef = doc(db, 'users', user.uid);
                         const updatedAddresses = [...(user.savedAddresses || [])];
@@ -101,12 +89,6 @@ export default function CheckoutPage() {
                         const updatedProfile = { ...user, savedAddresses: updatedAddresses };
                         await setDoc(userDocRef, updatedProfile);
                         setUser(updatedProfile);
-=======
-                    if (data?.display_name) {
-                        setArea(data.display_name);
-                        const pin = data?.address?.postcode;
-                        if (typeof pin === 'string') setPincode(pin.replace(/\D/g, '').slice(0, 6));
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
                     }
                 } catch (error) {
                     console.error('Error', error);
@@ -123,7 +105,6 @@ export default function CheckoutPage() {
     };
 
     const handleConfirmOrder = async () => {
-<<<<<<< HEAD
         if (!user || !user.savedAddresses?.[0]) {
             alert("Please add a delivery address first.");
             return;
@@ -139,12 +120,21 @@ export default function CheckoutPage() {
                 userId: user.uid,
                 customerName: user.name || 'Customer',
                 customerPhone: user.phone,
-                items,
+                items: items.map(item => ({
+                    productId: item.id,
+                    qty: item.quantity,
+                    price: item.discountPrice || item.price,
+                    name: item.name,
+                    imageUrl: item.imageUrl,
+                    unit: item.unit
+                })),
                 totalAmount: total,
-                status: 'Placed',
-                batchType: batchInfo.title,
+                status: 'Placed' as OrderStatus,
+                batchType: batchInfo.title as BatchType,
                 paymentMethod: paymentMethod,
                 deliveryAddress: user.savedAddresses[0],
+                assignedAgentId: null,
+                deliveredAt: null,
                 createdAt: new Date().toISOString()
             };
 
@@ -168,50 +158,6 @@ export default function CheckoutPage() {
         } catch (error) {
             console.error("Order failed", error);
             alert("Failed to place order.");
-=======
-        if (!user) return;
-        if (!flat.trim() || !area.trim() || !landmark.trim() || pincode.length < 6) {
-            alert('Please fill Flat, Area, Landmark and valid Pincode before placing order.');
-            return;
-        }
-
-        const address = {
-            id: 'addr-1',
-            type: 'Home' as const,
-            flat: flat.trim(),
-            area: area.trim(),
-            landmark: landmark.trim(),
-            pincode: pincode.trim(),
-            latitude,
-            longitude,
-            address: `${flat.trim()}, ${area.trim()}, ${landmark.trim()} - ${pincode.trim()}`,
-        };
-
-        setIsProcessing(true);
-        try {
-            const userDocRef = doc(db, 'users', user.uid);
-            const updatedProfile = { ...user, savedAddresses: [address] };
-            await setDoc(userDocRef, updatedProfile, { merge: true });
-            setUser(updatedProfile);
-
-            placeOrder({
-                userId: user.uid,
-                customerName: user.name,
-                customerPhone: user.phone,
-                items: items.map((item) => ({ productId: item.id, qty: item.quantity, price: item.discountPrice || item.price })),
-                totalAmount: total,
-                paymentMethod: 'UPI',
-                batchType: batchInfo.batchType,
-                deliveryAddress: address,
-            });
-
-            clearCart();
-            alert('Order placed successfully!');
-            router.push('/orders');
-        } catch (error) {
-            console.error(error);
-            alert('Could not place order. Please try again.');
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
         } finally {
             setIsProcessing(false);
         }
@@ -248,7 +194,6 @@ export default function CheckoutPage() {
 
                 <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
                     <div className="flex justify-between items-center mb-4">
-<<<<<<< HEAD
                         <h3 className="font-bold text-gray-900 flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-emerald-500" /> Delivery Address
                         </h3>
@@ -328,35 +273,6 @@ export default function CheckoutPage() {
                                     </div>
                                 </div>
                                 <span className="font-extrabold text-sm text-gray-900">₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
-=======
-                        <h3 className="font-bold text-gray-900 flex items-center gap-2"><MapPin className="w-4 h-4 text-emerald-500" /> Delivery Address</h3>
-                        <button onClick={handleAutoDetectLocation} disabled={addressLoading} className="text-xs font-extrabold text-emerald-600 uppercase tracking-widest disabled:opacity-50">
-                            {addressLoading ? 'Detecting...' : 'Detect Pinpoint'}
-                        </button>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-3">
-                        <input value={flat} onChange={(e) => setFlat(e.target.value)} placeholder="Flat / House No" className="border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-                        <input value={landmark} onChange={(e) => setLandmark(e.target.value)} placeholder="Landmark" className="border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-                        <input value={pincode} onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="Pincode" className="border border-gray-200 rounded-lg px-3 py-2 text-sm" />
-                        <input value={area} onChange={(e) => setArea(e.target.value)} placeholder="Area / Street / City" className="border border-gray-200 rounded-lg px-3 py-2 text-sm md:col-span-2" />
-                    </div>
-
-                    {(latitude && longitude) ? (
-                        <a className="text-xs text-blue-600 font-semibold mt-3 inline-block" target="_blank" rel="noreferrer" href={`https://maps.google.com/?q=${latitude},${longitude}`}>
-                            View exact pin on map ({latitude.toFixed(5)}, {longitude.toFixed(5)})
-                        </a>
-                    ) : null}
-                </div>
-
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
-                    <h3 className="font-bold text-gray-900 mb-4">Order Summary ({items.length} items)</h3>
-                    <div className="space-y-2">
-                        {items.map((item) => (
-                            <div key={item.id} className="flex justify-between text-sm">
-                                <span>{item.name} x {item.quantity}</span>
-                                <span className="font-bold">₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}</span>
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
                             </div>
                         ))}
                     </div>
@@ -370,17 +286,12 @@ export default function CheckoutPage() {
                         <span className="text-[10px] text-emerald-700 font-extrabold tracking-widest uppercase">To Pay</span>
                         <span className="text-xl font-black text-emerald-900 text-left">₹{total.toFixed(2)}</span>
                     </div>
-<<<<<<< HEAD
                     <button
                         onClick={handleConfirmOrder}
                         disabled={isProcessing || !user?.savedAddresses?.[0]}
                         className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 disabled:border-b-0 text-white font-black tracking-widest uppercase text-sm py-4 rounded-xl shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
                     >
                         {isProcessing ? 'Processing Payment...' : 'Swipe to Pay'} <ArrowRight className="w-5 h-5" />
-=======
-                    <button onClick={handleConfirmOrder} disabled={isProcessing} className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-extrabold uppercase text-sm py-4 rounded-xl flex items-center justify-center gap-2">
-                        {isProcessing ? 'Processing...' : 'Place Order'} <ArrowRight className="w-5 h-5" />
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
                     </button>
                 </div>
             </div>

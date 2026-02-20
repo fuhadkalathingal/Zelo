@@ -40,8 +40,7 @@ export default function AdminOrdersPage() {
                 <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-500 uppercase tracking-wider">Unassigned Orders ({activeBatch})</div>
                     <div className="divide-y divide-gray-100">
-<<<<<<< HEAD
-                        {MOCK_ORDERS.filter(o => o.batchType === activeBatch).map(order => (
+                        {unassignedOrders.length === 0 ? <p className="p-4 text-sm text-gray-500 font-bold">No pending orders in {activeBatch} batch.</p> : unassignedOrders.map((order) => (
                             <div key={order.orderId} className="p-4 flex items-center gap-4 hover:bg-emerald-50/50 transition-colors">
                                 <input
                                     type="checkbox"
@@ -55,15 +54,8 @@ export default function AdminOrdersPage() {
                                 <div className="flex-1">
                                     <div className="font-extrabold text-gray-900">{order.orderId}</div>
                                     <div className="text-sm font-semibold text-gray-800">{order.deliveryAddress.area} • <span className="text-gray-900">₹{order.totalAmount}</span> • {order.paymentMethod}</div>
-=======
-                        {unassignedOrders.length === 0 ? <p className="p-4 text-sm text-gray-500">No pending orders in this batch.</p> : unassignedOrders.map((order) => (
-                            <div key={order.orderId} className="p-4 flex items-center gap-4">
-                                <input type="checkbox" checked={selectedOrders.includes(order.orderId)} onChange={(e) => setSelectedOrders((prev) => e.target.checked ? [...prev, order.orderId] : prev.filter((id) => id !== order.orderId))} />
-                                <div className="flex-1">
-                                    <div className="font-bold text-gray-800">{order.orderId}</div>
-                                    <div className="text-sm text-gray-500">{order.deliveryAddress.area} • ₹{order.totalAmount}</div>
->>>>>>> 31b3ab587fdab182935d6e485f2e314a844c8886
                                 </div>
+                                <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">{order.status}</span>
                             </div>
                         ))}
                     </div>
@@ -86,6 +78,6 @@ export default function AdminOrdersPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

@@ -1,14 +1,4 @@
 import { create } from 'zustand';
-import { UserProfile, UserRole } from '@/types';
-
-interface AuthState {
-    user: UserProfile | null;
-    loading: boolean;
-    setUser: (user: UserProfile | null) => void;
-    setLoading: (loading: boolean) => void;
-}
-
-import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserProfile } from '@/types';
 

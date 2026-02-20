@@ -4,7 +4,7 @@ import { use, useState } from 'react';
 import { getProductById } from '@/lib/data';
 import { notFound, useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/useCartStore';
-import { ChevronLeft, Share2, ShieldCheck, Tag, Info, ChevronRight, Plus, Minus, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Share2, ShieldCheck, Tag, Info, ChevronRight, Plus, Minus, ArrowRight, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
