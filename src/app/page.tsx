@@ -7,27 +7,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const MOCK_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Farm Fresh Tomato (Hybrid)', category: 'Fresh Vegetables', price: 24, discountPrice: 18, imageUrl: '🍅', inStock: true, unit: '500 g' },
-  { id: 'p2', name: 'Red Onions', category: 'Fresh Vegetables', price: 40, discountPrice: 25, imageUrl: '🧅', inStock: true, unit: '1 kg' },
-  { id: 'p3', name: 'Fresh Harvest Potato', category: 'Fresh Vegetables', price: 45, discountPrice: 30, imageUrl: '🥔', inStock: true, unit: '1 kg' },
-  { id: 'p4', name: 'Amul Taaza Milk', category: 'Dairy & Bread', price: 25, discountPrice: 24, imageUrl: '🥛', inStock: true, unit: '500 ml' },
-  { id: 'p5', name: 'Aashirvaad Shudh Chakki Atta', category: 'Atta, Rice & Dals', price: 295, discountPrice: 250, imageUrl: '🌾', inStock: true, unit: '5 kg' },
-  { id: 'p6', name: 'Britannia Good Day Cashew', category: 'Snacks', price: 20, imageUrl: '🍪', inStock: true, unit: '60 g' },
-];
-
-const CATEGORIES = [
-  { name: 'Fruits & Vegetables', icon: '🥦' },
-  { name: 'Dairy, Bread & Eggs', icon: '🍞' },
-  { name: 'Atta, Rice, Oil & Dals', icon: '🌾' },
-  { name: 'Meat, Fish & Eggs', icon: '🍗' },
-  { name: 'Masala & Dry Fruits', icon: '🌶️' },
-  { name: 'Breakfast & Sauces', icon: '🥣' },
-  { name: 'Packaged Food', icon: '🥫' },
-  { name: 'Tea, Coffee & More', icon: '☕' },
-  { name: 'Ice Creams & More', icon: '🍦' },
-  { name: 'Frozen Food', icon: '🧊' },
-];
+import { MOCK_PRODUCTS, CATEGORIES } from '@/lib/data';
 
 export default function HomePage() {
   const { items, addItem, updateQuantity } = useCartStore();
@@ -98,9 +78,9 @@ export default function HomePage() {
               )}
 
               {/* Image Space */}
-              <div className="w-full aspect-square bg-[#FAFAFA] rounded-2xl flex items-center justify-center text-7xl mb-4 overflow-hidden relative group-hover:bg-[#F3F4F6] transition-colors border border-gray-50">
+              <Link href={`/product/${prod.id}`} className="w-full aspect-square bg-[#FAFAFA] rounded-2xl flex items-center justify-center text-7xl mb-4 overflow-hidden relative group-hover:bg-[#F3F4F6] transition-colors border border-gray-50 cursor-pointer">
                 <span className="drop-shadow-lg scale-110 group-hover:scale-125 transition-transform duration-300">{prod.imageUrl}</span>
-              </div>
+              </Link>
 
               {/* Delivery Meta */}
               <div className="flex items-center gap-1.5 mb-1.5">

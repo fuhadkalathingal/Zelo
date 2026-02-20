@@ -59,8 +59,8 @@ export default function SearchPage() {
                     ) : (
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                             {filteredProducts.map(product => (
-                                <Link href="/" key={product.id} className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
-                                    <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                <Link href={`/product/${product.id}`} key={product.id} className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
+                                    <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-pointer">
                                         {product.imageUrl}
                                     </div>
                                     <div>

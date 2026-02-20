@@ -1,0 +1,29 @@
+import { Product } from '@/types';
+
+export const CATEGORIES = [
+    { name: 'Fruits & Vegetables', icon: '🥦' },
+    { name: 'Dairy, Bread & Eggs', icon: '🍞' },
+    { name: 'Atta, Rice, Oil & Dals', icon: '🌾' },
+    { name: 'Meat, Fish & Eggs', icon: '🍗' },
+    { name: 'Masala & Dry Fruits', icon: '🌶️' },
+    { name: 'Breakfast & Sauces', icon: '🥣' },
+    { name: 'Packaged Food', icon: '🥫' },
+    { name: 'Tea, Coffee & More', icon: '☕' },
+    { name: 'Ice Creams & More', icon: '🍦' },
+    { name: 'Frozen Food', icon: '🧊' },
+];
+
+export const MOCK_PRODUCTS: Product[] = [
+    { id: 'p1', name: 'Farm Fresh Tomato (Hybrid)', category: 'Fresh Vegetables', price: 24, discountPrice: 18, imageUrl: '🍅', inStock: true, unit: '500 g' },
+    { id: 'p2', name: 'Red Onions', category: 'Fresh Vegetables', price: 40, discountPrice: 25, imageUrl: '🧅', inStock: true, unit: '1 kg' },
+    { id: 'p3', name: 'Fresh Harvest Potato', category: 'Fresh Vegetables', price: 45, discountPrice: 30, imageUrl: '🥔', inStock: true, unit: '1 kg' },
+    { id: 'p4', name: 'Amul Taaza Milk', category: 'Dairy & Bread', price: 25, discountPrice: 24, imageUrl: '🥛', inStock: true, unit: '500 ml' },
+    { id: 'p5', name: 'Aashirvaad Shudh Chakki Atta', category: 'Atta, Rice & Dals', price: 295, discountPrice: 250, imageUrl: '🌾', inStock: true, unit: '5 kg' },
+    { id: 'p6', name: 'Britannia Good Day Cashew', category: 'Snacks', price: 20, imageUrl: '🍪', inStock: true, unit: '60 g' },
+    { id: 'p7', name: 'India Gate Jeera Rice | Short Grain', category: 'Atta, Rice & Dals', price: 267, discountPrice: 205, imageUrl: '🍚', inStock: true, unit: '1 kg' },
+    { id: 'p8', name: 'Real Fruit Power Mixed Fruit', category: 'Breakfast & Sauces', price: 110, discountPrice: 95, imageUrl: '🧃', inStock: false, unit: '1 L' },
+];
+
+export const getProductById = (id: string): Product | undefined => {
+    return MOCK_PRODUCTS.find(p => p.id === id);
+};

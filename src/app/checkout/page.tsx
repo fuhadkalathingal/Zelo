@@ -2,19 +2,21 @@
 
 import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
-import { ChevronLeft, MapPin, ArrowRight, Clock, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, MapPin, ArrowRight, Clock, ShieldCheck, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection } from 'firebase/firestore';
 
 export default function CheckoutPage() {
     const router = useRouter();
     const { items, getCartTotal, clearCart } = useCartStore();
     const { user, setUser } = useAuthStore();
+
     const [isProcessing, setIsProcessing] = useState(false);
     const [batchInfo, setBatchInfo] = useState({ title: 'Lunch Batch', time: 'Today, 12:45 PM' });
     const [addressLoading, setAddressLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'COD'>('UPI');
 
     const total = getCartTotal();
 
@@ -46,7 +48,6 @@ export default function CheckoutPage() {
                         if (updatedAddresses.length > 0) {
                             updatedAddresses[0].area = data.display_name;
                         } else {
-                            // Fallback if somehow there's no address array
                             updatedAddresses.push({ id: 'addr-1', type: 'Home' as const, flat: '', area: data.display_name, landmark: '', pincode: '000000' });
                         }
 
@@ -68,14 +69,54 @@ export default function CheckoutPage() {
         );
     };
 
-    const handleConfirmOrder = () => {
+    const handleConfirmOrder = async () => {
+        if (!user || !user.savedAddresses?.[0]) {
+            alert("Please add a delivery address first.");
+            return;
+        }
+
         setIsProcessing(true);
-        setTimeout(() => {
-            setIsProcessing(false);
-            alert("Order placed successfully! 🚀");
+        try {
+            // Create a new Order Document in a root 'orders' collection
+            const orderRef = doc(collection(db, 'orders'));
+
+            const newOrder = {
+                orderId: orderRef.id,
+                userId: user.uid,
+                customerName: user.name || 'Customer',
+                customerPhone: user.phone,
+                items,
+                totalAmount: total,
+                status: 'Placed',
+                batchType: batchInfo.title,
+                paymentMethod: paymentMethod,
+                deliveryAddress: user.savedAddresses[0],
+                createdAt: new Date().toISOString()
+            };
+
+            await setDoc(orderRef, newOrder);
+
+            // Keep user profile history updated
+            const userRef = doc(db, 'users', user.uid);
+            const userOrders = user.orders || [];
+
+            await setDoc(userRef, {
+                ...user,
+                orders: [...userOrders, newOrder]
+            });
+
+            setUser({ ...user, orders: [...userOrders, newOrder] });
             clearCart();
-            router.push('/');
-        }, 1500);
+
+            // Push to Tracking Page
+            router.push(`/order/${orderRef.id}`);
+
+        } catch (error) {
+            console.error("Order failed", error);
+            alert("Failed to place order.");
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     if (items.length === 0) {
@@ -83,7 +124,7 @@ export default function CheckoutPage() {
             <div className="min-h-[calc(100vh-80px)] bg-gray-50 flex items-center justify-center p-6 text-center">
                 <div>
                     <h2 className="text-xl font-extrabold text-gray-900 mb-2">Nothing to Checkout</h2>
-                    <button onClick={() => router.push('/')} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl mt-4">Go to Home</button>
+                    <button onClick={() => router.push('/')} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl mt-4 border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all">Go to Home</button>
                 </div>
             </div>
         );
@@ -139,7 +180,6 @@ export default function CheckoutPage() {
                             <button onClick={handleAutoDetectLocation} disabled={addressLoading} className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-widest hover:underline disabled:opacity-50">
                                 {addressLoading ? 'Detecting...' : 'Auto Detect'}
                             </button>
-                            <button className="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest hover:underline whitespace-nowrap">Edit Manual</button>
                         </div>
                     </div>
 
@@ -154,6 +194,46 @@ export default function CheckoutPage() {
                             Please verify your location to proceed.
                         </p>
                     )}
+                </div>
+
+                {/* Payment Method Selector */}
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
+                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">
+                        Payment Method
+                    </h3>
+                    <div className="space-y-3">
+                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'UPI' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                            <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'UPI' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
+                                    <CreditCard className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className={`font-bold text-sm ${paymentMethod === 'UPI' ? 'text-emerald-900' : 'text-gray-900'}`}>Pay via UPI</p>
+                                    <p className="text-[10px] font-semibold text-gray-500">Google Pay, PhonePe, Paytm</p>
+                                </div>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'UPI' ? 'border-emerald-500' : 'border-gray-300'}`}>
+                                {paymentMethod === 'UPI' && <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>}
+                            </div>
+                            <input type="radio" className="hidden" checked={paymentMethod === 'UPI'} onChange={() => setPaymentMethod('UPI')} />
+                        </label>
+
+                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                            <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'COD' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
+                                    <Banknote className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className={`font-bold text-sm ${paymentMethod === 'COD' ? 'text-emerald-900' : 'text-gray-900'}`}>Cash on Delivery</p>
+                                    <p className="text-[10px] font-semibold text-gray-500">Pay at your doorstep</p>
+                                </div>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'COD' ? 'border-emerald-500' : 'border-gray-300'}`}>
+                                {paymentMethod === 'COD' && <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>}
+                            </div>
+                            <input type="radio" className="hidden" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} />
+                        </label>
+                    </div>
                 </div>
 
                 {/* Order Summary Small */}
@@ -188,8 +268,8 @@ export default function CheckoutPage() {
                     </div>
                     <button
                         onClick={handleConfirmOrder}
-                        disabled={isProcessing}
-                        className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-extrabold tracking-wide uppercase text-sm py-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                        disabled={isProcessing || !user?.savedAddresses?.[0]}
+                        className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 disabled:border-b-0 text-white font-black tracking-widest uppercase text-sm py-4 rounded-xl shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
                     >
                         {isProcessing ? 'Processing Payment...' : 'Swipe to Pay'} <ArrowRight className="w-5 h-5" />
                     </button>
