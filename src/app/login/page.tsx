@@ -28,42 +28,55 @@ function LoginContent() {
     const { setUser } = useAuthStore();
 
     const handleGoogleAuth = async () => {
+        setIsProcessing(true);
+        let authenticatedUser: any = null;
+
         try {
-            setIsProcessing(true);
             const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-
-            // Check if user exists in Firestore
-            const userDocRef = doc(db, 'users', user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-
-            if (userDocSnap.exists()) {
-                // User already has profile setup
-                const data = userDocSnap.data();
-                setUser({
-                    uid: user.uid,
-                    phone: data.phone,
-                    email: data.email || user.email || undefined,
-                    name: data.name || user.displayName || 'Demo User',
-                    photoURL: data.photoURL || user.photoURL || undefined,
-                    role: data.role || 'customer',
-                    savedAddresses: data.savedAddresses || [],
-                    createdAt: data.createdAt
-                });
-                router.push(redirectUrl);
-            } else {
-                // New user - prompt for details
-                setTempUid(user.uid);
-                setTempName(user.displayName || 'New User');
-                setTempEmail(user.email || '');
-                setTempPhoto(user.photoURL || '');
-                setStep('DETAILS');
-            }
-        } catch (error) {
+            authenticatedUser = result.user;
+        } catch (error: any) {
             console.error("Auth Error", error);
-            alert("Authentication failed. Please check your credentials or network.");
-        } finally {
+            const errorMsg = error?.message || error?.code || "Unknown Error";
+            alert(`Authentication failed. Firebase says: ${errorMsg}\n\nMake sure Google Sign-In is enabled in Firebase Console!`);
             setIsProcessing(false);
+            return;
+        }
+
+        if (authenticatedUser) {
+            try {
+                // Check if user exists in Firestore
+                const userDocRef = doc(db, 'users', authenticatedUser.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (userDocSnap.exists()) {
+                    // User already has profile setup
+                    const data = userDocSnap.data();
+                    setUser({
+                        uid: authenticatedUser.uid,
+                        phone: data.phone,
+                        email: data.email || authenticatedUser.email || undefined,
+                        name: data.name || authenticatedUser.displayName || 'Demo User',
+                        photoURL: data.photoURL || authenticatedUser.photoURL || undefined,
+                        role: data.role || 'customer',
+                        savedAddresses: data.savedAddresses || [],
+                        createdAt: data.createdAt
+                    });
+                    router.push(redirectUrl);
+                } else {
+                    // New user - prompt for details
+                    setTempUid(authenticatedUser.uid);
+                    setTempName(authenticatedUser.displayName || 'New User');
+                    setTempEmail(authenticatedUser.email || '');
+                    setTempPhoto(authenticatedUser.photoURL || '');
+                    setStep('DETAILS');
+                }
+            } catch (error: any) {
+                console.error("Firestore Read Error", error);
+                const errorMsg = error?.message || error?.code || "Unknown Error";
+                alert(`Google Login succeeded, but connecting to Firestore Database failed!\n\nPlease check if your Firestore Database is created and has Security Rules allowing read/write.\n\nError: ${errorMsg}`);
+            } finally {
+                setIsProcessing(false);
+            }
         }
     };
 

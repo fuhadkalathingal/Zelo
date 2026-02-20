@@ -5,6 +5,9 @@ export type AddressType = 'Home' | 'Work' | 'Other';
 export type UserRole = 'customer' | 'admin' | 'agent';
 
 export interface Address {
+    id?: string;
+    label?: string;
+    address?: string;
     type: AddressType;
     flat: string;
     area: string;
