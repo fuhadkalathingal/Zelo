@@ -13,6 +13,8 @@ export interface Address {
     area: string;
     landmark: string;
     pincode: string;
+    latitude?: number;
+    longitude?: number;
 }
 
 export interface UserProfile {
@@ -56,6 +58,8 @@ export interface OrderItem {
 export interface Order {
     orderId: string;
     userId: string;
+    customerName?: string;
+    customerPhone?: string;
     assignedAgentId: string | null;
     items: OrderItem[];
     totalAmount: number;
