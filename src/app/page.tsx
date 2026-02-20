@@ -202,26 +202,14 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          /* Product Sections */
-          CATEGORIES.slice(0, 3).map((categoryName) => {
-            const sectionProducts = MOCK_PRODUCTS.filter(p => p.category === categoryName.name);
-            if (sectionProducts.length === 0) return null;
-
-            return (
-              <div key={categoryName.name} className="mb-10 animate-in fade-in duration-300">
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-xl md:text-2xl text-gray-900 font-extrabold flex items-center gap-2">
-                    <span className="text-2xl">{categoryName.icon}</span> {categoryName.name}
-                  </h2>
-                  <Link href="/categories" className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center uppercase tracking-wide">
-                    VIEW ALL <span className="ml-0.5">&rsaquo;</span>
-                  </Link>
-                </div>
-
-                {renderProducts(sectionProducts)}
-              </div>
-            );
-          })
+          <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl md:text-2xl text-gray-900 font-extrabold flex items-center gap-2">
+                <span className="text-2xl">🏠</span> All Items
+              </h2>
+            </div>
+            {renderProducts(MOCK_PRODUCTS)}
+          </div>
         )}
       </div>
     </main >

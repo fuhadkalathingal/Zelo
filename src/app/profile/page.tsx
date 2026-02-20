@@ -1,9 +1,10 @@
 "use client";
 
 import { useAuthStore } from '@/store/useAuthStore';
+import { useOrderStore } from '@/store/useOrderStore';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, LogOut, Edit3, MapPin, User, Mail, Phone, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, LogOut, Edit3, MapPin, User, Mail, Phone, CheckCircle2, Package, ShieldCheck, ChevronRight, Truck } from 'lucide-react';
 import { auth, db } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -11,6 +12,12 @@ import { doc, updateDoc } from 'firebase/firestore';
 export default function ProfilePage() {
     const { user, setUser } = useAuthStore();
     const router = useRouter();
+    const orders = useOrderStore((state) => state.orders);
+
+    // Derived values
+    const myOrders = orders.filter(o => o.userId === user?.uid).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const activeOrders = myOrders.filter(o => o.status !== 'Delivered');
+    const pastOrders = myOrders.filter(o => o.status === 'Delivered');
 
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
@@ -175,13 +182,87 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
+                {/* Role-Based Quick Links */}
+                {(user.role === 'admin' || user.role === 'agent') && (
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-emerald-100 mt-6 relative overflow-hidden">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full opacity-50 pointer-events-none"></div>
+                        <h3 className="font-extrabold text-gray-900 flex items-center gap-2 mb-4">
+                            <ShieldCheck className="w-5 h-5 text-emerald-500" /> Professional Portals
+                        </h3>
+                        <div className="space-y-3">
+                            {user.role === 'admin' && (
+                                <button
+                                    onClick={() => router.push('/admin/orders')}
+                                    className="w-full flex items-center justify-between bg-emerald-50 hover:bg-emerald-100 text-emerald-800 p-4 rounded-2xl transition-all border border-emerald-100 group"
+                                >
+                                    <span className="font-extrabold text-sm flex items-center gap-2"><MapPin className="w-4 h-4" /> Admin Dashboard</span>
+                                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            )}
+                            {user.role === 'agent' && (
+                                <button
+                                    onClick={() => router.push('/agent')}
+                                    className="w-full flex items-center justify-between bg-indigo-50 hover:bg-indigo-100 text-indigo-800 p-4 rounded-2xl transition-all border border-indigo-100 group"
+                                >
+                                    <span className="font-extrabold text-sm flex items-center gap-2"><Truck className="w-4 h-4" /> Agent Dashboard</span>
+                                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Active Orders */}
+                {activeOrders.length > 0 && (
+                    <div className="bg-white rounded-3xl p-6 shadow-sm border border-orange-100 mt-6 overflow-hidden">
+                        <h3 className="font-extrabold text-gray-900 flex items-center gap-2 mb-4 border-b border-gray-50 pb-4">
+                            <Package className="w-5 h-5 text-orange-500" /> Active Deliveries ({activeOrders.length})
+                        </h3>
+                        <div className="space-y-4">
+                            {activeOrders.map(order => (
+                                <div key={order.orderId} className="border border-orange-100 bg-orange-50/30 rounded-2xl p-4">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div>
+                                            <p className="font-extrabold text-sm text-gray-900">{order.orderId}</p>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                        </div>
+                                        <span className="bg-orange-100 text-orange-800 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">
+                                            {order.status}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-3 mt-4">
+                                        <div className="flex -space-x-2">
+                                            {order.items.slice(0, 3).map((item, idx) => (
+                                                <div key={idx} className="w-8 h-8 rounded-full bg-white border-2 border-orange-50 flex items-center justify-center text-sm shadow-sm z-10">
+                                                    {item.imageUrl || '📦'}
+                                                </div>
+                                            ))}
+                                            {order.items.length > 3 && (
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 z-0">
+                                                    +{order.items.length - 3}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <button
+                                            onClick={() => router.push(`/order/${order.orderId}`)}
+                                            className="ml-auto text-xs font-black bg-gray-900 text-white px-4 py-2 rounded-xl shadow-md hover:bg-black transition-colors"
+                                        >
+                                            Track Order
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Actions */}
-                <div className="pt-2">
+                <div className="pt-6">
                     <button
                         onClick={() => router.push('/orders')}
                         className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 font-bold py-4 rounded-2xl transition-all"
                     >
-                        View Order History
+                        View All Order History ({pastOrders.length} Past)
                     </button>
                 </div>
 
