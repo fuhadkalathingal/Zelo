@@ -38,6 +38,9 @@ export interface AgentProfile {
     isActive: boolean;
     currentLocation?: string;
     payoutPerDelivery?: number;
+    rating?: number;
+    totalDeliveries?: number;
+    totalEarnings?: number;
 }
 
 export interface AgentApplication {

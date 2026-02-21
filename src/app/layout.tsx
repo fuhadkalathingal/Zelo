@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body className="bg-gray-50 text-gray-900">
         <StoreInitializer />
         <Header />
         {children}
