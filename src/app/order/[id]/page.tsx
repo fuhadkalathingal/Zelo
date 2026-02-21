@@ -113,20 +113,26 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     </motion.div>
                 )}
 
-                {/* Gamified Timeline */}
-                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h3 className="font-extrabold text-gray-900 mb-6 flex items-center gap-2">
-                        Tracking Details
-                    </h3>
+                {/* Amazon/Flipkart Style Timeline */}
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200">
+                    <div className="mb-8">
+                        <h3 className="font-extrabold text-gray-900 text-xl tracking-tight">
+                            {currentOrder.status === 'Delivered' ? 'Delivered successfully' : `Arriving ${currentOrder.batchType === 'Morning' ? '12:45 PM' : '6:45 PM'}`}
+                        </h3>
+                        {currentOrder.status !== 'Delivered' && (
+                            <p className="text-sm font-semibold text-gray-600 mt-1">Your items are on the way to {currentOrder.deliveryAddress.area}</p>
+                        )}
+                    </div>
 
-                    <div className="relative pl-6 space-y-8">
-                        {/* Vertical Line */}
-                        <div className="absolute left-[34px] top-2 bottom-6 w-0.5 bg-gray-100 -z-10"></div>
+                    <div className="relative pl-4 space-y-8">
+                        {/* Thick Background Line */}
+                        <div className="absolute left-[31px] top-4 bottom-8 w-1 bg-gray-200 rounded-full z-0"></div>
+                        {/* Dynamic Progress Line */}
                         <motion.div
                             initial={{ height: 0 }}
                             animate={{ height: `${(currentStatusIndex / 3) * 100}%` }}
-                            transition={{ duration: 1.5, ease: "easeOut" }}
-                            className="absolute left-[34px] top-2 w-0.5 bg-emerald-500 -z-10"
+                            transition={{ duration: 1.2, ease: "easeOut" }}
+                            className="absolute left-[31px] top-4 w-1 bg-emerald-500 rounded-full z-0"
                         ></motion.div>
 
                         {STEPS.map((step, idx) => {
@@ -136,21 +142,18 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                             return (
                                 <motion.div
                                     key={step.id}
-                                    initial={{ opacity: 0, x: -20 }}
+                                    initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.2 }}
-                                    className={`flex items-start gap-4 ${isCompleted || isActive ? 'opacity-100' : 'opacity-40'}`}
+                                    transition={{ delay: idx * 0.15 }}
+                                    className="flex items-start gap-5 relative z-10"
                                 >
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 relative overflow-hidden z-10 ${isCompleted ? 'bg-emerald-500 border-emerald-100 text-white' : isActive ? 'bg-white border-emerald-500 text-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.1)]' : 'bg-gray-100 border-white text-gray-400'}`}>
-                                        <step.icon className={`w-4 h-4 relative z-10 ${isActive && !isCompleted ? 'animate-pulse' : ''}`} />
+                                    <div className={`w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center border-4 border-white ${isCompleted ? 'bg-emerald-500 text-white' : isActive ? 'bg-emerald-500 text-white shadow-[0_0_0_4px_rgba(16,185,129,0.2)]' : 'bg-gray-300 text-transparent'}`}>
+                                        {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-2.5 h-2.5 bg-white rounded-full" />}
                                     </div>
-                                    <div className="flex-1 pt-2 bg-white">
-                                        <h4 className={`font-extrabold text-sm ${isCompleted || isActive ? 'text-gray-900' : 'text-gray-500'}`}>{step.title}</h4>
-                                        <p className="text-xs font-semibold text-gray-500 mt-1">{step.time}</p>
+                                    <div className="flex-1 pt-1 bg-white pr-2 pb-2">
+                                        <h4 className={`font-extrabold text-base ${isCompleted || isActive ? 'text-gray-900' : 'text-gray-500'}`}>{step.title}</h4>
+                                        <p className={`text-xs font-bold mt-0.5 ${isCompleted || isActive ? 'text-emerald-700' : 'text-gray-400'}`}>{step.time}</p>
                                     </div>
-                                    {isActive && !isCompleted && (
-                                        <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded mt-2">In Progress</span>
-                                    )}
                                 </motion.div>
                             )
                         })}

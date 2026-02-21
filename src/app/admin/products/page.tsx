@@ -6,6 +6,8 @@ import { Plus, Edit2, Trash2, Search, Filter, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/types';
 import { CATEGORIES } from '@/lib/data';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/firebase';
 
 export default function AdminProductsPage() {
     const { products, addProduct, updateProduct, deleteProduct, loading } = useProductStore();
@@ -15,6 +17,7 @@ export default function AdminProductsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -31,6 +34,24 @@ export default function AdminProductsPage() {
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const fileRef = ref(storage, `products/${Date.now()}_${file.name}`);
+            await uploadBytes(fileRef, file);
+            const url = await getDownloadURL(fileRef);
+            setFormData(prev => ({ ...prev, imageUrl: url }));
+        } catch (error) {
+            console.error("Image upload failed:", error);
+            alert("Failed to upload image. Please try again or check Firebase Storage rules.");
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     const openAddModal = () => {
         setEditingProduct(null);
@@ -166,7 +187,7 @@ export default function AdminProductsPage() {
                                         </td>
                                         <td className="p-4 whitespace-nowrap">
                                             <div className="font-black text-sm text-gray-900">₹{prod.discountPrice || prod.price}</div>
-                                            {prod.discountPrice && <div className="text-[10px] font-bold text-gray-400 line-through">MRP ₹{prod.price}</div>}
+                                            {prod.discountPrice && <div className="text-[10px] font-bold text-gray-500 line-through">MRP ₹{prod.price}</div>}
                                         </td>
                                         <td className="p-4 text-right whitespace-nowrap">
                                             <button onClick={() => openEditModal(prod)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors inline-block">
@@ -224,11 +245,31 @@ export default function AdminProductsPage() {
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Discount Price (₹)</label>
                                         <input type="number" min="0" value={formData.discountPrice} onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" placeholder="Optional" />
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Icon/Emoji *</label>
-                                        <input required type="text" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
+                                    <div className="col-span-2">
+                                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Product Image *</label>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 flex flex-shrink-0 items-center justify-center overflow-hidden">
+                                                {formData.imageUrl && formData.imageUrl.startsWith('http') ? (
+                                                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                                                ) : formData.imageUrl ? (
+                                                    <span className="text-3xl">{formData.imageUrl}</span>
+                                                ) : (
+                                                    <span className="text-sm text-gray-400 font-bold">Upload</span>
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    disabled={isUploading}
+                                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all cursor-pointer disabled:opacity-50"
+                                                />
+                                                {isUploading && <p className="text-xs text-emerald-600 mt-2 font-bold animate-pulse">Uploading image securely...</p>}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
+                                    <div className="col-span-2">
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Unit *</label>
                                         <input required type="text" placeholder="e.g. 1 kg, 500g" value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
                                     </div>
@@ -243,7 +284,7 @@ export default function AdminProductsPage() {
                                     <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">
                                         Cancel
                                     </button>
-                                    <button type="submit" disabled={isSubmitting} className="flex-1 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:active:scale-100 text-white font-bold rounded-xl active:scale-95 transition-all shadow-md">
+                                    <button type="submit" disabled={isSubmitting || isUploading} className="flex-1 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:active:scale-100 text-white font-bold rounded-xl active:scale-95 transition-all shadow-md">
                                         {isSubmitting ? 'Saving...' : 'Save Product'}
                                     </button>
                                 </div>

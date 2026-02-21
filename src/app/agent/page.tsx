@@ -3,7 +3,7 @@
 import { useOrderStore } from '@/store/useOrderStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Phone, MapPin, CheckCircle2, Trophy, Navigation, Truck, KeyRound } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAgentStore } from '@/store/useAgentStore';
 
@@ -47,12 +47,100 @@ export default function AgentDashboard() {
         });
     };
 
-    if (!user || user.role !== 'agent') {
+    const [hasApplied, setHasApplied] = useState(false);
+    const [isApplying, setIsApplying] = useState(false);
+    const [appForm, setAppForm] = useState({ name: user?.name || '', phone: user?.phone || '', vehicleNo: '', licenseNo: '' });
+
+    useEffect(() => {
+        if (user && user.role !== 'agent') {
+            import('firebase/firestore').then(({ doc, getDoc }) => {
+                import('@/lib/firebase').then(({ db }) => {
+                    getDoc(doc(db, 'agent_applications', user.uid)).then(d => {
+                        if (d.exists()) setHasApplied(true);
+                    });
+                });
+            });
+        }
+    }, [user]);
+
+    const handleApply = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsApplying(true);
+        try {
+            const { doc, setDoc } = await import('firebase/firestore');
+            const { db } = await import('@/lib/firebase');
+            await setDoc(doc(db, 'agent_applications', user!.uid), {
+                uid: user!.uid,
+                ...appForm,
+                status: 'pending',
+                appliedAt: new Date().toISOString()
+            });
+            setHasApplied(true);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to submit application.");
+        } finally {
+            setIsApplying(false);
+        }
+    };
+
+    if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4">
-                <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl">🚫</div>
-                <h1 className="text-xl font-black text-gray-900">Unauthorized Access</h1>
-                <p className="text-sm font-semibold text-gray-500">You must be an active agent to view this page.</p>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4 text-center p-6">
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-3xl">🛵</div>
+                <h1 className="text-xl font-black text-gray-900">Partner with Zelo</h1>
+                <p className="text-sm font-semibold text-gray-500 max-w-sm">Please log in to your account first to apply as a Delivery Agent.</p>
+                <a href="/login" className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-xl mt-4">Login or Register</a>
+            </div>
+        );
+    }
+
+    if (user.role !== 'agent') {
+        if (hasApplied) {
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4 text-center p-6">
+                    <div className="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-3xl">⏳</div>
+                    <h1 className="text-2xl font-black text-gray-900">Application Pending</h1>
+                    <p className="text-sm font-semibold text-gray-500 max-w-sm">We are reviewing your application. You'll be notified once your Agent profile is activated.</p>
+                    <a href="/" className="px-6 py-3 bg-gray-900 text-white font-bold rounded-xl mt-4">Return Home</a>
+                </div>
+            );
+        }
+
+        return (
+            <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6">
+                <div className="max-w-md mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <div className="bg-emerald-500 p-8 text-white text-center">
+                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🛵</div>
+                        <h2 className="text-2xl font-black tracking-tight">Become a Delivery Partner</h2>
+                        <p className="text-emerald-100 font-medium text-sm mt-2">Earn weekly payouts and manage your own flexible schedule.</p>
+                    </div>
+                    <form onSubmit={handleApply} className="p-8 space-y-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Full Name *</label>
+                            <input required type="text" value={appForm.name} onChange={e => setAppForm({ ...appForm, name: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Phone Number *</label>
+                            <input required type="tel" value={appForm.phone} onChange={e => setAppForm({ ...appForm, phone: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Vehicle Registration No. *</label>
+                            <input required type="text" placeholder="e.g. MH 12 AB 1234" value={appForm.vehicleNo} onChange={e => setAppForm({ ...appForm, vehicleNo: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all uppercase" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Driving License No. *</label>
+                            <input required type="text" placeholder="DL Number" value={appForm.licenseNo} onChange={e => setAppForm({ ...appForm, licenseNo: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all uppercase" />
+                        </div>
+
+                        <div className="pt-4">
+                            <button type="submit" disabled={isApplying} className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 text-white font-black rounded-xl shadow-[0_4px_0_rgb(4,120,87)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-widest text-sm">
+                                {isApplying ? 'Submitting...' : 'Submit Agent Application'}
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-gray-400 font-semibold text-center mt-4">By applying, you agree to Zelo's Delivery Partner Terms & Conditions.</p>
+                    </form>
+                </div>
             </div>
         );
     }

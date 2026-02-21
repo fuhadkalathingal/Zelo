@@ -9,6 +9,8 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useEffect } from 'react';
 
+import { useOrderStore } from '@/store/useOrderStore';
+
 export default function AdminAgentsPage() {
     const { agents, addAgent, updateAgent, deleteAgent, loading } = useAgentStore();
     const [searchTerm, setSearchTerm] = useState('');
@@ -69,7 +71,31 @@ export default function AdminAgentsPage() {
     };
 
     const toggleStatus = async (agent: AgentProfile) => {
-        await updateAgent(agent.agentId, { isActive: !agent.isActive });
+        const newStatus = !agent.isActive;
+        await updateAgent(agent.agentId, { isActive: newStatus });
+
+        const { orders, updateOrderStatus } = useOrderStore.getState();
+
+        if (newStatus) {
+            // Agent is now Online - Assign them all pending unassigned orders
+            const unassignedOrders = orders.filter(o => !o.assignedAgentId && o.status !== 'Delivered');
+            for (const order of unassignedOrders) {
+                await updateOrderStatus(order.orderId, 'Batch Processing', { assignedAgentId: agent.agentId });
+            }
+        } else {
+            // Agent is now Offline - Reassign their active orders to someone else
+            const activeAgents = useAgentStore.getState().agents.filter(a => a.isActive && a.agentId !== agent.agentId && validAgentUids.includes(a.uid));
+            const agentPendingOrders = orders.filter(o => o.assignedAgentId === agent.agentId && o.status !== 'Delivered');
+
+            for (const order of agentPendingOrders) {
+                if (activeAgents.length > 0) {
+                    const fallbackAgent = activeAgents[Math.floor(Math.random() * activeAgents.length)];
+                    await updateOrderStatus(order.orderId, 'Batch Processing', { assignedAgentId: fallbackAgent.agentId });
+                } else {
+                    await updateOrderStatus(order.orderId, 'Placed', { assignedAgentId: null });
+                }
+            }
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -158,21 +184,21 @@ export default function AdminAgentsPage() {
 
                             <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-2 gap-4 mt-2 border border-gray-100">
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-400 tracking-widest mb-1">Vehicle No</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Vehicle No</p>
                                     <p className="font-bold text-sm text-gray-800">{agent.vehicleNo}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-400 tracking-widest mb-1">Phone</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Phone</p>
                                     <p className="font-bold text-sm text-gray-800">{agent.phone}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-400 tracking-widest mb-1">Status</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Status</p>
                                     <p className={`font-black text-sm ${agent.isActive ? 'text-emerald-600' : 'text-gray-500'}`}>
                                         {agent.isActive ? '🟢 Online' : '⚪ Offline'}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-400 tracking-widest mb-1">Payout Rate</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Payout Rate</p>
                                     <p className="font-bold text-sm text-gray-800">₹{agent.payoutPerDelivery || 50}/order</p>
                                 </div>
                             </div>

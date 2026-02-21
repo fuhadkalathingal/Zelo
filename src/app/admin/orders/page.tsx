@@ -1,18 +1,29 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { AgentProfile } from '@/types';
 import { useOrderStore } from '@/store/useOrderStore';
 import { useAgentStore } from '@/store/useAgentStore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export default function AdminOrdersPage() {
     const [activeBatch, setActiveBatch] = useState<'Morning' | 'Evening'>('Morning');
     const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
     const [isAssigning, setIsAssigning] = useState(false);
+    const [validAgentUids, setValidAgentUids] = useState<string[]>([]);
+
+    useEffect(() => {
+        const q = query(collection(db, 'users'), where('role', '==', 'agent'));
+        const unsub = onSnapshot(q, (snapshot) => {
+            setValidAgentUids(snapshot.docs.map(d => d.id));
+        });
+        return () => unsub();
+    }, []);
 
     const orders = useOrderStore((state) => state.orders);
     const updateOrderStatus = useOrderStore((state) => state.updateOrderStatus);
-    const agents = useAgentStore((state) => state.agents).filter(a => a.isActive);
+    const agents = useAgentStore((state) => state.agents).filter(a => a.isActive && validAgentUids.includes(a.uid));
 
     const unassignedOrders = useMemo(
         () => orders.filter((o) => o.batchType === activeBatch && !o.assignedAgentId && o.status !== 'Delivered'),
@@ -47,7 +58,7 @@ export default function AdminOrdersPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-500 uppercase tracking-wider">Unassigned Orders ({activeBatch})</div>
+                    <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-700 uppercase tracking-wider">Unassigned Orders ({activeBatch})</div>
                     <div className="divide-y divide-gray-100">
                         {unassignedOrders.length === 0 ? <p className="p-4 text-sm text-gray-500 font-bold">No pending orders in {activeBatch} batch.</p> : unassignedOrders.map((order) => (
                             <div key={order.orderId} className="p-4 flex items-center gap-4 hover:bg-emerald-50/50 transition-colors">
@@ -71,7 +82,7 @@ export default function AdminOrdersPage() {
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-500 uppercase tracking-wider">Agents</div>
+                    <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-700 uppercase tracking-wider">Agents</div>
                     <div className="p-2 space-y-2">
                         {agents.length === 0 ? (
                             <p className="text-gray-500 text-sm font-bold p-2">No active agents online.</p>

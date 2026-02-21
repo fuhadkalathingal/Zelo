@@ -113,8 +113,9 @@ export default function CheckoutPage() {
 
         setIsProcessing(true);
         try {
-            // Create a new Order Document in a root 'orders' collection
-            const orderRef = doc(collection(db, 'orders'));
+            // Create a neat 'Flipkart-style' Order ID rather than a messy hash
+            const neatOrderId = 'OD' + Date.now().toString() + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            const orderRef = doc(db, 'orders', neatOrderId);
 
             // Auto-assign to an active agent if any exist
             const activeAgents = useAgentStore.getState().agents.filter(a => a.isActive);
