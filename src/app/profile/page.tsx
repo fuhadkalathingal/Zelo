@@ -8,6 +8,7 @@ import { ChevronLeft, LogOut, Edit3, MapPin, User, Mail, Phone, CheckCircle2, Pa
 import { auth, db } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function ProfilePage() {
     const { user, setUser } = useAuthStore();
@@ -233,8 +234,8 @@ export default function ProfilePage() {
                                     <div className="flex items-center gap-3 mt-4">
                                         <div className="flex -space-x-2">
                                             {order.items.slice(0, 3).map((item, idx) => (
-                                                <div key={idx} className="w-8 h-8 rounded-full bg-white border-2 border-orange-50 flex items-center justify-center text-sm shadow-sm z-10">
-                                                    {item.imageUrl || '📦'}
+                                                <div key={idx} className="w-8 h-8 rounded-full bg-white border-2 border-orange-50 flex items-center justify-center text-sm shadow-sm z-10 overflow-hidden relative">
+                                                    <ProductImage imageUrl={item.imageUrl} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-sm" />
                                                 </div>
                                             ))}
                                             {order.items.length > 3 && (

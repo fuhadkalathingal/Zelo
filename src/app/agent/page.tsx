@@ -234,8 +234,10 @@ export default function AgentPage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-xs font-extrabold text-gray-500 uppercase tracking-widest mb-1">Delivering To</p>
-                          <p className="font-bold text-gray-900 leading-snug">{order.customerName}</p>
-                          <p className="text-sm text-gray-700 font-semibold">{order.deliveryAddress.flat}, {order.deliveryAddress.area}, {order.deliveryAddress.landmark}</p>
+                          <p className="font-bold text-gray-900 leading-none">{order.customerName}</p>
+                          <p className="text-[10px] font-bold text-emerald-600 mb-2">{order.customerPhone}</p>
+                          <p className="text-sm text-gray-700 font-semibold leading-snug">{order.deliveryAddress.flat}, {order.deliveryAddress.area}</p>
+                          <p className="text-xs text-gray-500 font-medium leading-snug">Landmark: {order.deliveryAddress.landmark}, {order.deliveryAddress.pincode}</p>
                         </div>
                       </div>
                       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
@@ -249,7 +251,11 @@ export default function AgentPage() {
                             <span className={`font-black ${order.paymentMethod === 'COD' ? 'text-amber-600' : 'text-emerald-600'}`}>{order.paymentMethod}</span>
                           </div>
                         </div>
-                        <button className="bg-gray-900 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-black transition-colors">Start Ride</button>
+                        {order.status === 'Batch Processing' ? (
+                          <button onClick={async (e) => { e.preventDefault(); await updateOrderStatus(order.orderId, 'Out for Delivery', { deliveryPin: Math.floor(1000 + Math.random() * 9000).toString() }); }} className="bg-gray-900 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-black transition-colors shrink-0">Start Ride</button>
+                        ) : order.status === 'Out for Delivery' ? (
+                          <button onClick={(e) => { e.preventDefault(); const pin = prompt('Enter 4-digit PIN from customer to deliver:'); if (pin === order.deliveryPin) updateOrderStatus(order.orderId, 'Delivered', { deliveredAt: new Date().toISOString() }); else if (pin) alert('Incorrect PIN!'); }} className="bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-emerald-700 transition-colors shrink-0 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Verify PIN</button>
+                        ) : null}
                       </div>
                     </div>
                   </Link>

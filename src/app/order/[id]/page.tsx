@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Package, MapPin, Truck, ChevronLeft, PhoneCall, KeyRound } from 'lucide-react';
+import { CheckCircle2, Package, MapPin, Truck, ChevronLeft, PhoneCall, KeyRound, Star, MessageSquare } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useOrderStore } from '@/store/useOrderStore';
 import { useAgentStore } from '@/store/useAgentStore';
@@ -20,6 +20,9 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
     const liveOrder = useOrderStore(s => s.orders.find(o => o.orderId === id));
     const [fallbackOrder, setFallbackOrder] = useState<Order | null>(null);
     const [isCheckingOrder, setIsCheckingOrder] = useState(true);
+    const [rating, setRating] = useState(0);
+    const [feedback, setFeedback] = useState('');
+    const [submittedRating, setSubmittedRating] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -78,7 +81,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
     const STEPS = [
         { id: 1, title: 'Order Confirmed', icon: CheckCircle2, status: currentStatusIndex >= 0 ? 'Completed' : 'Pending', time: new Date(currentOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
-        { id: 2, title: 'Batch Processing', icon: Package, status: currentStatusIndex >= 1 ? 'Completed' : 'Pending', time: currentOrder.batchType },
+        { id: 2, title: 'Batch Processing', icon: Package, status: currentStatusIndex >= 1 ? 'Completed' : 'Pending', time: currentOrder.batchType + (currentOrder.batchType === 'Morning' ? ' (9am - 1pm)' : ' (5pm - 9pm)') },
         { id: 3, title: 'Out for Delivery', icon: Truck, status: currentStatusIndex >= 2 ? 'Completed' : 'Pending', time: assignedAgent ? 'Assigned to ' + assignedAgent.name : 'Waiting for Agent' },
         { id: 4, title: 'Delivered', icon: MapPin, status: currentStatusIndex >= 3 ? 'Completed' : 'Pending', time: currentOrder.deliveredAt ? new Date(currentOrder.deliveredAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending' },
     ];
@@ -156,6 +159,43 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         })}
                     </div>
                 </div>
+
+                {currentOrder.status === 'Delivered' && assignedAgent && (
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white rounded-3xl p-6 shadow-sm border border-emerald-100 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-0"></div>
+                        <div className="relative z-10 text-center space-y-4">
+                            <div className="w-16 h-16 bg-emerald-100 rounded-full mx-auto flex items-center justify-center">
+                                <Star className="w-8 h-8 text-emerald-500 fill-emerald-500" />
+                            </div>
+                            <div>
+                                <h3 className="font-extrabold text-lg text-gray-900 leading-tight">Rate Your Delivery</h3>
+                                <p className="text-sm font-semibold text-gray-600 mt-1">How was your delivery by {assignedAgent.name}?</p>
+                            </div>
+
+                            {!submittedRating ? (
+                                <div className="space-y-4 pt-2">
+                                    <div className="flex justify-center gap-2">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button key={star} onClick={() => setRating(star)} className="p-2 -m-2 group transition-transform hover:scale-110">
+                                                <Star className={`w-8 h-8 transition-colors duration-300 ${rating >= star ? 'text-amber-400 fill-amber-400' : 'text-gray-300 group-hover:text-amber-200'}`} />
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="relative">
+                                        <MessageSquare className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
+                                        <input value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="Add a comment... (optional)" className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-gray-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all" />
+                                    </div>
+                                    <button onClick={() => setSubmittedRating(true)} disabled={rating === 0} className="w-full py-4 rounded-xl bg-gray-900 text-white font-black hover:bg-black transition-colors disabled:opacity-50 disabled:bg-gray-400 shadow-md">Submit Rating</button>
+                                </div>
+                            ) : (
+                                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="pt-2">
+                                    <p className="font-black text-emerald-600 text-lg mb-1">Thanks for your feedback!</p>
+                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">We'll let {assignedAgent.name} know.</p>
+                                </motion.div>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
 
                 <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200">
                     <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">Items Ordered ({currentOrder.items.length})</h3>

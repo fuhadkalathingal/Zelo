@@ -92,7 +92,7 @@ export default function AdminOrdersPage() {
                                 <input type="checkbox" checked={selectedOrders.includes(order.orderId)} onChange={(e) => setSelectedOrders((prev) => e.target.checked ? [...prev, order.orderId] : prev.filter(id => id !== order.orderId))} />
                                 <div className="flex-1">
                                     <div className="font-extrabold">{order.orderId}</div>
-                                    <div className="text-sm font-semibold text-gray-700">{order.deliveryAddress.area} · ₹{order.totalAmount}</div>
+                                    <div className="text-sm font-semibold text-gray-700">{order.deliveryAddress.flat}, {order.deliveryAddress.area} · ₹{order.totalAmount}</div>
                                 </div>
                             </div>
                         ))}
@@ -122,7 +122,7 @@ export default function AdminOrdersPage() {
                         <div key={order.orderId} className="p-4 flex items-center justify-between">
                             <div>
                                 <p className="font-extrabold">{order.orderId}</p>
-                                <p className="text-sm font-semibold text-gray-800">{order.deliveryAddress.area}</p>
+                                <p className="text-sm font-semibold text-gray-800">{order.deliveryAddress.flat}, {order.deliveryAddress.area}</p>
                             </div>
                             <p className="text-xs font-black uppercase bg-blue-50 text-blue-700 px-2 py-1 rounded">{order.status}</p>
                         </div>
