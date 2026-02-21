@@ -1,16 +1,22 @@
 import { Product } from '@/types';
 
-export const CATEGORIES = [
-    { name: 'Fruits & Vegetables', icon: '🥦' },
-    { name: 'Dairy, Bread & Eggs', icon: '🍞' },
-    { name: 'Atta, Rice, Oil & Dals', icon: '🌾' },
-    { name: 'Meat, Fish & Eggs', icon: '🍗' },
-    { name: 'Masala & Dry Fruits', icon: '🌶️' },
-    { name: 'Breakfast & Sauces', icon: '🥣' },
-    { name: 'Packaged Food', icon: '🥫' },
-    { name: 'Tea, Coffee & More', icon: '☕' },
-    { name: 'Ice Creams & More', icon: '🍦' },
-    { name: 'Frozen Food', icon: '🧊' },
+export interface Category {
+    name: string;
+    icon: string;
+    bg?: string;
+}
+
+export const CATEGORIES: Category[] = [
+    { name: 'Fruits & Vegetables', icon: '🥦', bg: 'bg-emerald-100 text-emerald-600' },
+    { name: 'Dairy, Bread & Eggs', icon: '🍞', bg: 'bg-yellow-100 text-yellow-600' },
+    { name: 'Atta, Rice, Oil & Dals', icon: '🌾', bg: 'bg-orange-100 text-orange-600' },
+    { name: 'Meat, Fish & Eggs', icon: '🍗', bg: 'bg-red-100 text-red-600' },
+    { name: 'Masala & Dry Fruits', icon: '🌶️', bg: 'bg-amber-100 text-amber-600' },
+    { name: 'Breakfast & Sauces', icon: '🥣', bg: 'bg-blue-100 text-blue-600' },
+    { name: 'Packaged Food', icon: '🥫', bg: 'bg-purple-100 text-purple-600' },
+    { name: 'Tea, Coffee & More', icon: '☕', bg: 'bg-stone-100 text-stone-600' },
+    { name: 'Ice Creams & More', icon: '🍦', bg: 'bg-pink-100 text-pink-600' },
+    { name: 'Frozen Food', icon: '🧊', bg: 'bg-cyan-100 text-cyan-600' },
 ];
 
 export const MOCK_PRODUCTS: Product[] = [
