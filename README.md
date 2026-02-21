@@ -1,53 +1,118 @@
-# Zelo
+# 🛒 Zelo Web App
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**Zelo** is a modern, ultra-fast 10-minute grocery delivery web application built to enterprise industry standards. This project leverages the latest web technologies to deliver a seamless shopping, checkout, and live-tracking experience.
 
-## Getting Started
+![Zelo Demo Preview](#) <!-- Add preview image link here when available -->
 
-First, run the development server:
+---
+
+## 🚀 Tech Stack
+
+Zelo is built on a robust, modern technology stack ensuring scalability, performance, and best-in-class developer experience:
+
+- **Framework:** [Next.js 14+] App Router
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS + Framer Motion (Glassmorphism & Micro-animations)
+- **State Management:**
+  - **Global/Local UI State:** Zustand
+  - **Server State (Caching/Sync):** SWR / React Query (conceptually adopted)
+- **Backend & Database:** Firebase (Firestore, Auth, Storage)
+
+---
+
+## 📁 File Structure & Architecture
+
+We follow a feature-based, scalable architecture designed for easy onboarding and maintenance.
+
+```text
+zelo/
+├── public/                 # Static assets (images, icons)
+├── src/
+│   ├── app/                # Next.js App Router (Pages & Layouts)
+│   │   ├── admin/          # Admin Dashboard routes
+│   │   ├── agent/          # Delivery Partner routes
+│   │   ├── order/[id]/     # Live Order Tracking
+│   │   ├── ...             # Other routes (home, profile, checkout)
+│   ├── components/         # Reusable UI Components
+│   │   ├── ui/             # Base level components (Buttons, Inputs, Dialogs)
+│   │   ├── features/       # Complex domain-specific components
+│   │   └── layouts/        # Page wrappers and structural components
+│   ├── store/              # Zustand global state slices
+│   │   ├── useAuthStore.ts
+│   │   ├── useCartStore.ts
+│   │   └── useOrderStore.ts
+│   ├── lib/                # Core utilities, Firebase init & dispatch logic
+│   ├── hooks/              # Custom React hooks (e.g., useRequireAuth)
+│   └── types/              # Global TypeScript interfaces
+└── README.md               # Project documentation
+```
+
+---
+
+## 🏗 Industry Standards & Best Practices
+
+When contributing to Zelo, please adhere to the following established standards:
+
+### 1. State Management 🗃️
+- **Zustand** is used for persistent UI state (e.g., Cart Items, Auth Session).
+- Avoid Prop Drilling. Components should subscribe directly to the slices of state they need.
+- **Local State** (`useState`) is strictly for UI-only ephemeral state (e.g., dropdown open/close).
+
+### 2. Firebase & Data Fetching ⚡
+- We use a **Flat NoSQL Structure** to minimize complex queries and avoid deep nesting.
+- Favor specialized custom hooks for Firebase operations (separating UI from database logic).
+- Security rules are paramount. Database reads/writes are strictly authenticated via Firebase Auth.
+
+### 3. UI/UX Aesthetics 🎨
+- **Visuals:** Embrace "Glassmorphism," vibrant yet accessible colors, and modern typography (Geist/Inter).
+- **Animations:** Use `framer-motion` for page transitions, staggered list loading, and micro-interactions. Modals and drawers should slide or fade smoothly.
+- **Performance:** Images must utilize native lazy loading (`loading="lazy"`) and optimized Next.js `<Image>` tags where applicable to reduce Time-to-Interactive (TTI).
+- **Responsiveness:** All pages are mobile-first, ensuring parity across desktop, tablet, and mobile viewing.
+
+---
+
+## 💻 Getting Started (Local Development)
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm, yarn, pnpm, or bun
+
+### 1. Environment Setup
+
+Create a `.env.local` file in the root directory and configure your Firebase project variables:
 
 ```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+*(Contact an administrator for development environment keys if needed).*
+
+### 2. Installation & Running
+
+Install dependencies and start the local development server:
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. Pages auto-update as you edit the source files.
 
-## Firebase env setup (Netlify/GitHub)
+---
 
-This app expects the following public Firebase variables. Configure them in your deployment provider
-environment settings (Netlify/Vercel/GitHub Actions) because `.env.local` is gitignored:
+## 🛠 Deployment
 
-```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCrOc8NrzGf5zmJM0lOTyk1o2AoQ1vQk00
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=zelo-webapp.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=zelo-webapp
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=zelo-webapp.firebasestorage.app
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=941028200648
-NEXT_PUBLIC_FIREBASE_APP_ID=1:941028200648:web:cd225d541adc7feccdd5fd
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-VJ768DDNGL
-```
+Deployment is fully automated through Vercel or Netlify.
+When pushing to the `main` branch, ensure your features are thoroughly tested. Check the deployment provider's dashboard for active CI/CD logs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Built with ❤️ by the Zelo Engineering Team.*

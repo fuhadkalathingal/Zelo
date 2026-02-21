@@ -88,7 +88,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
-            <div className={`p-4 pt-6 md:p-6 sticky top-0 z-10 shadow-sm text-white rounded-b-3xl transition-colors duration-500 ${currentOrder.status === 'Delivered' ? 'bg-emerald-600' : 'bg-emerald-500'}`}>
+            <div className={`p-4 pt-6 md:p-6 sticky top-0 z-40 shadow-sm text-white rounded-b-3xl transition-colors duration-500 ${currentOrder.status === 'Delivered' ? 'bg-emerald-600' : 'bg-emerald-500'}`}>
                 <div className="flex items-center gap-4 mb-4">
                     <button onClick={() => router.push('/')} className="p-2 -ml-2 hover:bg-white/20 rounded-full transition-colors bg-black/10">
                         <ChevronLeft className="w-6 h-6" />
