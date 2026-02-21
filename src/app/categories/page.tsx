@@ -5,7 +5,17 @@ import { CATEGORIES } from '@/lib/data';
 import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
 import { Minus, Plus } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
+
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+
+const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function CategoriesPage() {
     const [activeCategory, setActiveCategory] = useState<string>(CATEGORIES[0].name);
@@ -39,10 +49,7 @@ export default function CategoriesPage() {
                 <motion.div
                     initial="hidden"
                     animate="show"
-                    variants={{
-                        hidden: { opacity: 0 },
-                        show: { opacity: 1, transition: { staggerChildren: 0.05 } }
-                    }}
+                    variants={containerVariants}
                     key={activeCategory} // Force re-animation when category changes
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
                 >
@@ -50,10 +57,7 @@ export default function CategoriesPage() {
                         const qty = getQty(product.id);
                         return (
                             <motion.div
-                                variants={{
-                                    hidden: { opacity: 0, y: 15 },
-                                    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
-                                }}
+                                variants={itemVariants}
                                 key={product.id}
                                 className="bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow"
                             >

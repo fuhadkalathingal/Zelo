@@ -10,6 +10,7 @@ import { CATEGORIES } from '@/lib/data';
 import { Product } from '@/types';
 import { useProductStore } from '@/store/useProductStore';
 import ProductImage from '@/components/ui/ProductImage';
+import { Variants } from 'framer-motion';
 
 export default function HomePage() {
   const { items, addItem, updateQuantity } = useCartStore();
@@ -64,7 +65,7 @@ export default function HomePage() {
   }, []);
 
   const renderProducts = (products: Product[]) => {
-    const container = {
+    const container: Variants = {
       hidden: { opacity: 0 },
       show: {
         opacity: 1,
@@ -74,13 +75,13 @@ export default function HomePage() {
       }
     };
 
-    const item = {
+    const item: Variants = {
       hidden: { opacity: 0, y: 20 },
       show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };
 
     return (
-      <motion.div 
+      <motion.div
         variants={container}
         initial="hidden"
         animate="show"

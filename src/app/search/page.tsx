@@ -3,10 +3,20 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, ChevronLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import ProductImage from '@/components/ui/ProductImage';
 import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
+
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+
+const itemVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 export default function SearchPage() {
     const [query, setQuery] = useState('');
@@ -66,10 +76,7 @@ export default function SearchPage() {
                         <motion.div
                             initial="hidden"
                             animate="show"
-                            variants={{
-                                hidden: { opacity: 0 },
-                                show: { opacity: 1, transition: { staggerChildren: 0.05 } }
-                            }}
+                            variants={containerVariants}
                             className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
                         >
                             {filteredProducts.map(product => {
@@ -77,10 +84,7 @@ export default function SearchPage() {
                                 return (
                                     <Link key={product.id} href={`/product/${product.id}`} passHref legacyBehavior>
                                         <motion.a
-                                            variants={{
-                                                hidden: { opacity: 0, scale: 0.95 },
-                                                show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
-                                            }}
+                                            variants={itemVariants}
                                             className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all group"
                                         >
                                             <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:bg-gray-100 transition-colors overflow-hidden p-2">
