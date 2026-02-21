@@ -145,13 +145,35 @@ export default function AgentDashboard() {
         );
     }
 
+    const handleToggleStatus = async () => {
+        if (!me) return;
+
+        const newStatus = !me.isActive;
+        const { updateAgent } = useAgentStore.getState();
+        await updateAgent(me.agentId, { isActive: newStatus });
+
+        // Trigger Auto-Assignment logic from the driver app side too
+        const { orders, updateOrderStatus } = useOrderStore.getState();
+        if (newStatus) {
+            const unassignedOrders = orders.filter(o => !o.assignedAgentId && o.status !== 'Delivered');
+            for (const order of unassignedOrders) {
+                await updateOrderStatus(order.orderId, 'Batch Processing', { assignedAgentId: me.agentId });
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20 font-sans">
             <div className="bg-gray-900 text-white p-5 sticky top-0 z-20 shadow-md rounded-b-3xl">
                 <div className="flex justify-between items-center mb-6">
                     <div>
                         <h1 className="text-2xl font-black tracking-tight">Agent Portal</h1>
-                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">ID: {user.uid.slice(0, 6)} • Active</p>
+                        <div className="flex items-center gap-2 mt-2">
+                            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest leading-none">ID: {user.uid.slice(0, 6)}</p>
+                            <button onClick={handleToggleStatus} className={`px-2 py-1 rounded shadow-sm text-[10px] font-black uppercase tracking-widest ${me?.isActive ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'} active:scale-95 transition-all`}>
+                                {me?.isActive ? '● Active' : '○ Offline'}
+                            </button>
+                        </div>
                     </div>
                     <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center font-black text-xl border-2 border-emerald-400 uppercase">
                         {user.name ? user.name.charAt(0) : 'Z'}

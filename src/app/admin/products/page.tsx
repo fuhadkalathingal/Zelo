@@ -42,12 +42,21 @@ export default function AdminProductsPage() {
         setIsUploading(true);
         try {
             const fileRef = ref(storage, `products/${Date.now()}_${file.name}`);
-            await uploadBytes(fileRef, file);
+
+            // Add a timeout because Firebase Storage can silently hang if CORS/rules block it
+            const uploadPromise = uploadBytes(fileRef, file);
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000));
+
+            await Promise.race([uploadPromise, timeoutPromise]);
+
             const url = await getDownloadURL(fileRef);
             setFormData(prev => ({ ...prev, imageUrl: url }));
-        } catch (error) {
-            console.error("Image upload failed:", error);
-            alert("Failed to upload image. Please try again or check Firebase Storage rules.");
+        } catch (error: any) {
+            console.error("Image upload failed or timed out:", error);
+            const fallbackUrl = prompt("Storage Upload unavailable (check Firebase rules). You can paste a direct Web Image URL below to continue:");
+            if (fallbackUrl) {
+                setFormData(prev => ({ ...prev, imageUrl: fallbackUrl }));
+            }
         } finally {
             setIsUploading(false);
         }

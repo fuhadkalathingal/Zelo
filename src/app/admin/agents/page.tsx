@@ -15,13 +15,23 @@ export default function AdminAgentsPage() {
     const { agents, addAgent, updateAgent, deleteAgent, loading } = useAgentStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [validAgentUids, setValidAgentUids] = useState<string[]>([]);
+    const [pendingApplications, setPendingApplications] = useState<any[]>([]);
 
     useEffect(() => {
         const q = query(collection(db, 'users'), where('role', '==', 'agent'));
         const unsub = onSnapshot(q, (snapshot) => {
             setValidAgentUids(snapshot.docs.map(d => d.id));
         });
-        return () => unsub();
+
+        const qApps = query(collection(db, 'agent_applications'));
+        const unsubApps = onSnapshot(qApps, (snapshot) => {
+            setPendingApplications(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+        });
+
+        return () => {
+            unsub();
+            unsubApps();
+        };
     }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -126,6 +136,31 @@ export default function AdminAgentsPage() {
         }
     };
 
+    const approveApplication = async (app: any) => {
+        if (!confirm(`Approve ${app.name} as a Delivery Agent?`)) return;
+        setIsSubmitting(true);
+        try {
+            const payload: AgentProfile = {
+                agentId: app.uid,
+                uid: app.uid,
+                name: app.name,
+                phone: app.phone,
+                vehicleNo: app.vehicleNo,
+                isActive: false,
+                payoutPerDelivery: 50
+            };
+            await addAgent(payload);
+            const { doc, deleteDoc } = await import('firebase/firestore');
+            const { db } = await import('@/lib/firebase');
+            await deleteDoc(doc(db, 'agent_applications', app.uid));
+        } catch (error) {
+            console.error("Failed to approve application", error);
+            alert("Error approving logic.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <div className="p-6 md:p-10 w-full h-full relative">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -137,6 +172,30 @@ export default function AdminAgentsPage() {
                     <Plus className="w-5 h-5" /> Onboard Agent
                 </button>
             </div>
+
+            {pendingApplications.length > 0 && (
+                <div className="mb-8 bg-blue-50/50 border border-blue-100 rounded-3xl p-6">
+                    <h2 className="font-black text-blue-900 mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        Pending Applications ({pendingApplications.length})
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {pendingApplications.map(app => (
+                            <div key={app.id} className="bg-white rounded-2xl p-4 shadow-sm border border-blue-100 flex flex-col gap-3">
+                                <div>
+                                    <h3 className="font-extrabold text-gray-900">{app.name}</h3>
+                                    <p className="text-xs font-bold text-gray-500 mb-1">{app.phone}</p>
+                                    <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest leading-none mt-2">Veh: {app.vehicleNo}</p>
+                                    <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest leading-none mt-1">DL: {app.licenseNo}</p>
+                                </div>
+                                <button onClick={() => approveApplication(app)} disabled={isSubmitting} className="w-full mt-auto py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition-all shadow-sm">
+                                    {isSubmitting ? 'Approving...' : 'Approve & Create Agent'}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="mb-6 relative max-w-xl">
                 <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
