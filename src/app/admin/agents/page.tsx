@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useAgentStore } from '@/store/useAgentStore';
-import { AgentProfile } from '@/types';
-import { Plus, Search, Star, MoreVertical, X, Trash2, Edit2 } from 'lucide-react';
+import { AgentApplication, AgentProfile } from '@/types';
+import { Plus, Search, X, Trash2, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -15,7 +15,7 @@ export default function AdminAgentsPage() {
     const { agents, addAgent, updateAgent, deleteAgent, loading } = useAgentStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [validAgentUids, setValidAgentUids] = useState<string[]>([]);
-    const [pendingApplications, setPendingApplications] = useState<any[]>([]);
+    const [pendingApplications, setPendingApplications] = useState<AgentApplication[]>([]);
 
     useEffect(() => {
         const q = query(collection(db, 'users'), where('role', '==', 'agent'));
@@ -25,7 +25,7 @@ export default function AdminAgentsPage() {
 
         const qApps = query(collection(db, 'agent_applications'));
         const unsubApps = onSnapshot(qApps, (snapshot) => {
-            setPendingApplications(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+            setPendingApplications(snapshot.docs.map(d => ({ ...d.data() } as AgentApplication)).filter((app) => app.status === 'pending'));
         });
 
         return () => {
@@ -136,7 +136,7 @@ export default function AdminAgentsPage() {
         }
     };
 
-    const approveApplication = async (app: any) => {
+    const approveApplication = async (app: AgentApplication) => {
         if (!confirm(`Approve ${app.name} as a Delivery Agent?`)) return;
         setIsSubmitting(true);
         try {
@@ -150,9 +150,9 @@ export default function AdminAgentsPage() {
                 payoutPerDelivery: 50
             };
             await addAgent(payload);
-            const { doc, deleteDoc } = await import('firebase/firestore');
+            const { doc, updateDoc } = await import('firebase/firestore');
             const { db } = await import('@/lib/firebase');
-            await deleteDoc(doc(db, 'agent_applications', app.uid));
+            await updateDoc(doc(db, 'agent_applications', app.uid), { status: 'approved', reviewedAt: new Date().toISOString() });
         } catch (error) {
             console.error("Failed to approve application", error);
             alert("Error approving logic.");
@@ -166,7 +166,7 @@ export default function AdminAgentsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">Staff & Agents</h1>
-                    <p className="text-gray-500 font-medium">Manage your {agents.length} delivery fleet members.</p>
+                    <p className="text-gray-700 font-medium">Manage your {agents.length} delivery fleet members.</p>
                 </div>
                 <button onClick={openAddModal} className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                     <Plus className="w-5 h-5" /> Onboard Agent
@@ -181,12 +181,13 @@ export default function AdminAgentsPage() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {pendingApplications.map(app => (
-                            <div key={app.id} className="bg-white rounded-2xl p-4 shadow-sm border border-blue-100 flex flex-col gap-3">
+                            <div key={app.uid} className="bg-white rounded-2xl p-4 shadow-sm border border-blue-100 flex flex-col gap-3">
                                 <div>
                                     <h3 className="font-extrabold text-gray-900">{app.name}</h3>
-                                    <p className="text-xs font-bold text-gray-500 mb-1">{app.phone}</p>
+                                    <p className="text-xs font-bold text-gray-700 mb-1">{app.phone} · {app.city}</p>
                                     <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest leading-none mt-2">Veh: {app.vehicleNo}</p>
                                     <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest leading-none mt-1">DL: {app.licenseNo}</p>
+                                    <p className="text-[10px] font-black uppercase text-blue-600 tracking-widest leading-none mt-1">Zone: {app.zone}</p>
                                 </div>
                                 <button onClick={() => approveApplication(app)} disabled={isSubmitting} className="w-full mt-auto py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition-all shadow-sm">
                                     {isSubmitting ? 'Approving...' : 'Approve & Create Agent'}
@@ -198,7 +199,7 @@ export default function AdminAgentsPage() {
             )}
 
             <div className="mb-6 relative max-w-xl">
-                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+                <Search className="w-5 h-5 text-gray-700 absolute left-3 top-3.5" />
                 <input
                     type="text"
                     placeholder="Search agents by Name or UID..."
@@ -227,12 +228,12 @@ export default function AdminAgentsPage() {
 
                             <div className="flex justify-between items-start">
                                 <div className="flex gap-4">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-sm ${agent.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-400 border border-gray-100'}`}>
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-sm ${agent.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-700 border border-gray-100'}`}>
                                         {agent.name.charAt(0)}
                                     </div>
                                     <div>
                                         <h3 className="font-extrabold text-lg text-gray-900 leading-tight">{agent.name}</h3>
-                                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate max-w-[120px]" title={agent.uid}>{agent.uid}</p>
+                                        <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest truncate max-w-[120px]" title={agent.uid}>{agent.uid}</p>
                                     </div>
                                 </div>
                                 <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-100">
@@ -243,21 +244,21 @@ export default function AdminAgentsPage() {
 
                             <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-2 gap-4 mt-2 border border-gray-100">
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Vehicle No</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-800 tracking-widest mb-1">Vehicle No</p>
                                     <p className="font-bold text-sm text-gray-800">{agent.vehicleNo}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Phone</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-800 tracking-widest mb-1">Phone</p>
                                     <p className="font-bold text-sm text-gray-800">{agent.phone}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Status</p>
-                                    <p className={`font-black text-sm ${agent.isActive ? 'text-emerald-600' : 'text-gray-500'}`}>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-800 tracking-widest mb-1">Status</p>
+                                    <p className={`font-black text-sm ${agent.isActive ? 'text-emerald-600' : 'text-gray-700'}`}>
                                         {agent.isActive ? '🟢 Online' : '⚪ Offline'}
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] uppercase font-extrabold text-gray-600 tracking-widest mb-1">Payout Rate</p>
+                                    <p className="text-[10px] uppercase font-extrabold text-gray-800 tracking-widest mb-1">Payout Rate</p>
                                     <p className="font-bold text-sm text-gray-800">₹{agent.payoutPerDelivery || 50}/order</p>
                                 </div>
                             </div>
@@ -271,7 +272,7 @@ export default function AdminAgentsPage() {
                     ))}
                     {!loading && filteredAgents.length === 0 && (
                         <div className="col-span-full text-center py-12">
-                            <p className="font-bold text-gray-500">No agents found.</p>
+                            <p className="font-bold text-gray-700">No agents found.</p>
                         </div>
                     )}
                 </div>
@@ -287,7 +288,7 @@ export default function AdminAgentsPage() {
                                 <h3 className="text-xl font-black text-gray-900">
                                     {editingAgent ? 'Edit Agent Profile' : 'Onboard New Agent'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-700 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -296,7 +297,7 @@ export default function AdminAgentsPage() {
                                 <div>
                                     <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">User UID *</label>
                                     <input disabled={!!editingAgent} placeholder="e.g. U7x2R..." required type="text" value={formData.uid} onChange={(e) => setFormData({ ...formData, uid: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all disabled:opacity-50" />
-                                    {!editingAgent && <p className="text-[10px] text-gray-500 mt-1">This must be the exact Firebase UID of the registered customer to elevate their role.</p>}
+                                    {!editingAgent && <p className="text-[10px] text-gray-700 mt-1">This must be the exact Firebase UID of the registered customer to elevate their role.</p>}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="col-span-2">
@@ -318,7 +319,7 @@ export default function AdminAgentsPage() {
                                     <div className="col-span-2 pt-2">
                                         <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl border border-gray-200">
                                             <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
-                                            <span className="font-bold text-sm text-gray-800">Immediately Start as "Online"</span>
+                                            <span className="font-bold text-sm text-gray-800">Immediately Start as &quot;Online&quot;</span>
                                         </label>
                                     </div>
                                 </div>

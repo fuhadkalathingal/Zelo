@@ -40,6 +40,25 @@ export interface AgentProfile {
     payoutPerDelivery?: number;
 }
 
+export interface AgentApplication {
+    uid: string;
+    name: string;
+    phone: string;
+    email?: string;
+    dob: string;
+    city: string;
+    zone: string;
+    vehicleType: 'Bike' | 'Scooter' | 'Cycle';
+    vehicleNo: string;
+    licenseNo: string;
+    emergencyContact: string;
+    hasSmartphone: boolean;
+    status: 'pending' | 'approved' | 'rejected';
+    appliedAt: string;
+    reviewedAt?: string;
+    reviewedBy?: string;
+}
+
 export interface Product {
     id: string;
     name: string;
