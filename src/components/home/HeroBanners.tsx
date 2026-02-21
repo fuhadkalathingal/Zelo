@@ -11,7 +11,7 @@ export default function HeroBanners() {
                     Fresh Groceries.<br />
                     <span className="text-emerald-600">Batched for Efficiency.</span>
                 </h2>
-                <p className="text-gray-600 mt-2 text-sm sm:text-base">
+                <p className="text-gray-700 mt-2 text-sm sm:text-base">
                     Zero delivery fees on orders above ₹199.
                 </p>
             </div>

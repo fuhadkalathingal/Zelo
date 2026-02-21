@@ -200,7 +200,7 @@ export default function CheckoutPage() {
                 <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
                     <h3 className="font-bold text-gray-900 flex items-center gap-2 mb-4"><Clock className="w-4 h-4 text-orange-500" /> Delivery Slot</h3>
                     <p className="text-sm font-bold">{batchInfo.title}</p>
-                    <p className="text-xs text-gray-600">{batchInfo.time}</p>
+                    <p className="text-xs text-gray-700">{batchInfo.time}</p>
                 </div>
 
                 <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
@@ -236,12 +236,12 @@ export default function CheckoutPage() {
                     <div className="space-y-3">
                         <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'UPI' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-200 bg-white hover:border-gray-200'}`}>
                             <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${paymentMethod === 'UPI' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-500'}`}>
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'UPI' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-600'}`}>
                                     <CreditCard className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className={`font-bold text-sm ${paymentMethod === 'UPI' ? 'text-emerald-900' : 'text-gray-900'}`}>Pay via UPI</p>
-                                    <p className="text-[10px] font-semibold text-gray-600">Google Pay, PhonePe, Paytm</p>
+                                    <p className="text-[10px] font-semibold text-gray-700">Google Pay, PhonePe, Paytm</p>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'UPI' ? 'border-emerald-500' : 'border-gray-300'}`}>
@@ -252,12 +252,12 @@ export default function CheckoutPage() {
 
                         <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-200 bg-white hover:border-gray-200'}`}>
                             <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${paymentMethod === 'COD' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-500'}`}>
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'COD' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-600'}`}>
                                     <Banknote className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className={`font-bold text-sm ${paymentMethod === 'COD' ? 'text-emerald-900' : 'text-gray-900'}`}>Cash on Delivery</p>
-                                    <p className="text-[10px] font-semibold text-gray-600">Pay at your doorstep</p>
+                                    <p className="text-[10px] font-semibold text-gray-700">Pay at your doorstep</p>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'COD' ? 'border-emerald-500' : 'border-gray-300'}`}>
@@ -297,7 +297,7 @@ export default function CheckoutPage() {
                     <button
                         onClick={handleConfirmOrder}
                         disabled={isProcessing || !user?.savedAddresses?.[0]}
-                        className="flex-1 bg-gray-900 hover:bg-black disabled:bg-gray-300 disabled:text-gray-600 text-white font-black tracking-widest uppercase text-sm py-5 rounded-2xl shadow-xl active:scale-[0.98] transition-all flex items-center justify-between px-8"
+                        className="flex-1 bg-gray-900 hover:bg-black disabled:bg-gray-300 disabled:text-gray-700 text-white font-black tracking-widest uppercase text-sm py-5 rounded-2xl shadow-xl active:scale-[0.98] transition-all flex items-center justify-between px-8"
                     >
                         <span>{isProcessing ? 'Processing Payment...' : (paymentMethod === 'COD' ? 'Place Order' : 'Pay Securely')}</span>
                         {!isProcessing && <span className="text-emerald-400">₹{total.toFixed(2)}</span>}

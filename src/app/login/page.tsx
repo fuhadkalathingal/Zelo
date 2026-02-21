@@ -161,7 +161,7 @@ function LoginContent() {
                         <Image src="/zelo.png" alt="Zelo" fill className="object-cover" />
                     </div>
                     <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to Zelo</h2>
-                    <p className="text-gray-600 text-sm font-medium">Batched delivery for the community</p>
+                    <p className="text-gray-700 text-sm font-medium">Batched delivery for the community</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
@@ -235,7 +235,7 @@ function LoginContent() {
                     )}
                 </div>
 
-                <p className="text-center text-xs text-gray-500 mt-8 leading-relaxed">
+                <p className="text-center text-xs text-gray-600 mt-8 leading-relaxed">
                     By continuing, you agree to our <br />
                     <a href="#" className="underline">Terms of Service</a> & <a href="#" className="underline">Privacy Policy</a>
                 </p>

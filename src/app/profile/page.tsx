@@ -115,7 +115,7 @@ export default function ProfilePage() {
                     </h3>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
+                        <label className="block text-[10px] font-extrabold text-gray-700 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
                         <input
                             type="text"
                             disabled={!isEditing}
@@ -126,7 +126,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
+                        <label className="block text-[10px] font-extrabold text-gray-700 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
                         <div className="relative">
                             <input
                                 type="email"
@@ -135,12 +135,12 @@ export default function ProfilePage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all font-bold text-gray-900 disabled:opacity-70 disabled:bg-gray-50/50"
                             />
-                            <Mail className="absolute left-4 top-3.5 w-4 h-4 text-gray-500" />
+                            <Mail className="absolute left-4 top-3.5 w-4 h-4 text-gray-600" />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Mobile Number</label>
+                        <label className="block text-[10px] font-extrabold text-gray-700 uppercase tracking-widest mb-1.5 ml-1">Mobile Number</label>
                         <div className="relative">
                             <input
                                 type="tel"
@@ -149,7 +149,7 @@ export default function ProfilePage() {
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all font-bold text-gray-900 disabled:opacity-70 disabled:bg-gray-50/50"
                             />
-                            <Phone className="absolute left-4 top-3.5 w-4 h-4 text-gray-500" />
+                            <Phone className="absolute left-4 top-3.5 w-4 h-4 text-gray-600" />
                         </div>
                     </div>
                 </div>
@@ -224,7 +224,7 @@ export default function ProfilePage() {
                                     <div className="flex justify-between items-start mb-3">
                                         <div>
                                             <p className="font-extrabold text-sm text-gray-900">{order.orderId}</p>
-                                            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                            <p className="text-[10px] text-gray-700 font-bold uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</p>
                                         </div>
                                         <span className="bg-orange-100 text-orange-800 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">
                                             {order.status}
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                                                 </div>
                                             ))}
                                             {order.items.length > 3 && (
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-600 z-0">
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-gray-700 z-0">
                                                     +{order.items.length - 3}
                                                 </div>
                                             )}

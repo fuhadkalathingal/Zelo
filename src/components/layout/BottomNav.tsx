@@ -34,8 +34,8 @@ export default function BottomNav() {
                                     {tab.badge}
                                 </span>
                             ) : null}
-                            <Icon className={`w-6 h-6 transition-all ${isActive ? 'text-emerald-500 scale-110' : 'text-gray-500 hover:text-gray-600'}`} strokeWidth={isActive ? 2.5 : 2} />
-                            <span className={`text-[10px] font-bold transition-colors ${isActive ? 'text-emerald-500' : 'text-gray-500'}`}>
+                            <Icon className={`w-6 h-6 transition-all ${isActive ? 'text-emerald-500 scale-110' : 'text-gray-600 hover:text-gray-700'}`} strokeWidth={isActive ? 2.5 : 2} />
+                            <span className={`text-[10px] font-bold transition-colors ${isActive ? 'text-emerald-500' : 'text-gray-600'}`}>
                                 {tab.name}
                             </span>
                         </Link>

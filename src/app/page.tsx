@@ -92,12 +92,12 @@ export default function HomePage() {
 
               {/* Details */}
               <h3 className="font-bold text-gray-900 text-sm leading-snug flex-1">{prod.name}</h3>
-              <p className="text-xs text-gray-600 mt-1 mb-4 font-medium">{prod.unit}</p>
+              <p className="text-xs text-gray-700 mt-1 mb-4 font-medium">{prod.unit}</p>
 
               {/* Price & Add Area */}
               <div className="flex items-end justify-between mt-auto">
                 <div className="flex flex-col">
-                  {prod.discountPrice && <span className="text-[10px] text-gray-500 line-through font-semibold leading-none mb-0.5">₹{prod.price}</span>}
+                  {prod.discountPrice && <span className="text-[10px] text-gray-600 line-through font-semibold leading-none mb-0.5">₹{prod.price}</span>}
                   <span className="font-extrabold text-gray-900 text-base leading-none">₹{prod.discountPrice || prod.price}</span>
                 </div>
 
@@ -167,7 +167,7 @@ export default function HomePage() {
             <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === null ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100' : 'bg-gray-50 border-gray-200 group-hover:border-emerald-200'}`}>
               🏠
             </div>
-            <span className={`text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === null ? 'text-emerald-700' : 'text-gray-600 group-hover:text-emerald-600'}`}>
+            <span className={`text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === null ? 'text-emerald-700' : 'text-gray-700 group-hover:text-emerald-600'}`}>
               All Items
             </span>
           </button>
@@ -181,7 +181,7 @@ export default function HomePage() {
               <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === cat.name ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100 scale-105' : 'bg-gray-50 border-gray-200 group-hover:border-emerald-200 group-hover:bg-emerald-50/30'}`}>
                 {cat.icon}
               </div>
-              <span className={`text-[9px] sm:text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === cat.name ? 'text-emerald-700' : 'text-gray-600 group-hover:text-emerald-600'}`}>
+              <span className={`text-[9px] sm:text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === cat.name ? 'text-emerald-700' : 'text-gray-700 group-hover:text-emerald-600'}`}>
                 {cat.name}
               </span>
             </button>
@@ -194,7 +194,7 @@ export default function HomePage() {
               <h2 className="text-xl md:text-2xl text-gray-900 font-extrabold flex items-center gap-2">
                 <span className="text-2xl">{CATEGORIES.find(c => c.name === activeCategory)?.icon || '🥦'}</span> {activeCategory}
               </h2>
-              <button onClick={() => setActiveCategory(null)} className="text-xs font-bold text-gray-600 hover:text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full uppercase tracking-wide">
+              <button onClick={() => setActiveCategory(null)} className="text-xs font-bold text-gray-700 hover:text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full uppercase tracking-wide">
                 Clear Filter
               </button>
             </div>

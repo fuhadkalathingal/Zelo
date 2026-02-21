@@ -25,7 +25,7 @@ export default function SearchPage() {
                 <input
                     type="text"
                     placeholder="Search for 'Bread' or 'Milk'"
-                    className="bg-transparent border-none outline-none w-full font-bold text-gray-900 placeholder:font-semibold placeholder:text-gray-500"
+                    className="bg-transparent border-none outline-none w-full font-bold text-gray-900 placeholder:font-semibold placeholder:text-gray-600"
                     autoFocus
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -56,8 +56,8 @@ export default function SearchPage() {
 
                     {filteredProducts.length === 0 ? (
                         <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                            <p className="font-bold text-gray-600">No products found for "{query}"</p>
-                            <p className="text-xs font-semibold text-gray-500 mt-1">Try searching for something else!</p>
+                            <p className="font-bold text-gray-700">No products found for "{query}"</p>
+                            <p className="text-xs font-semibold text-gray-600 mt-1">Try searching for something else!</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -70,13 +70,13 @@ export default function SearchPage() {
                                         </div>
                                         <div>
                                             <p className="font-extrabold text-sm text-gray-900 line-clamp-2 leading-tight">{product.name}</p>
-                                            <p className="text-[10px] font-bold text-gray-600 mt-0.5">{product.unit}</p>
+                                            <p className="text-[10px] font-bold text-gray-700 mt-0.5">{product.unit}</p>
                                         </div>
                                         <div className="mt-auto flex items-center justify-between pt-2">
                                             <div className="flex flex-col">
                                                 {product.discountPrice ? (
                                                     <>
-                                                        <span className="text-[10px] text-gray-500 line-through font-bold">₹{product.price}</span>
+                                                        <span className="text-[10px] text-gray-600 line-through font-bold">₹{product.price}</span>
                                                         <span className="font-black text-sm text-gray-900 tracking-tight">₹{product.discountPrice}</span>
                                                     </>
                                                 ) : (

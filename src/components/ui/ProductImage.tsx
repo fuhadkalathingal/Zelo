@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 interface ProductImageProps {
   imageUrl?: string;
   alt: string;
@@ -12,7 +14,9 @@ const isRenderableImage = (value?: string) => {
 
 export default function ProductImage({ imageUrl, alt, className = '', emojiClassName = '' }: ProductImageProps) {
   if (isRenderableImage(imageUrl)) {
-    return <img src={imageUrl} alt={alt} className={className} />;
+    // Combine base responsive classes with whatever the parent passes
+    const finalClassName = twMerge("w-full h-full object-contain p-2", className);
+    return <img src={imageUrl} alt={alt} className={finalClassName} />;
   }
 
   return <span className={emojiClassName}>{imageUrl || '📦'}</span>;

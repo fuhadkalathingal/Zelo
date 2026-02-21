@@ -78,13 +78,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <div className="p-5 md:p-0 space-y-6">
                     {/* Title & Brand */}
                     <div className="space-y-2">
-                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-extrabold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-extrabold text-gray-600 uppercase tracking-widest flex items-center gap-1.5">
                             Zelo Fresh <ChevronRight className="w-3 h-3" />
                         </motion.p>
                         <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
                             {product.name}
                         </motion.h1>
-                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm font-bold text-gray-600 bg-gray-100 w-fit px-3 py-1 rounded-md">
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm font-bold text-gray-700 bg-gray-100 w-fit px-3 py-1 rounded-md">
                             Net Wt: {product.unit}
                         </motion.p>
                     </div>
@@ -98,11 +98,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     <div className="flex items-end gap-3">
                                         <span className="text-3xl font-black text-emerald-700 tracking-tight">₹{product.discountPrice}</span>
                                         <div className="flex flex-col pb-1">
-                                            <span className="text-xs text-gray-500 font-bold line-through">MRP ₹{product.price}</span>
+                                            <span className="text-xs text-gray-600 font-bold line-through">MRP ₹{product.price}</span>
                                             <span className="text-[10px] text-emerald-600 font-extrabold uppercase tracking-wider">Save ₹{product.price - product.discountPrice}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[10px] text-gray-500 font-semibold">(Inclusive of all taxes)</p>
+                                    <p className="text-[10px] text-gray-600 font-semibold">(Inclusive of all taxes)</p>
                                 </>
                             ) : (
                                 <div className="flex items-end gap-3">
@@ -116,7 +116,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                 <span className="bg-orange-100 text-orange-600 p-1.5 rounded-lg"><Tag className="w-4 h-4" /></span>
                                 <span className="text-xs font-extrabold text-gray-700">Get at ₹{Math.max(1, finalPrice - 20)} with bank offers</span>
                             </div>
-                            <ChevronRight className="w-4 h-4 text-gray-500" />
+                            <ChevronRight className="w-4 h-4 text-gray-600" />
                         </div>
                     </motion.div>
 
@@ -150,7 +150,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     <h3 className="font-extrabold text-sm text-gray-800 flex items-center gap-2">
                                         <section.icon className="w-4 h-4 text-emerald-500" /> {section.title}
                                     </h3>
-                                    <ChevronRight className={`w-4 h-4 text-gray-500 transition-transform ${activeAccordion === section.id ? 'rotate-90' : ''}`} />
+                                    <ChevronRight className={`w-4 h-4 text-gray-600 transition-transform ${activeAccordion === section.id ? 'rotate-90' : ''}`} />
                                 </button>
                                 <AnimatePresence>
                                     {activeAccordion === section.id && (
@@ -160,7 +160,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                             exit={{ height: 0, opacity: 0 }}
                                             className="overflow-hidden bg-gray-50/50"
                                         >
-                                            <p className="p-4 pt-0 text-xs font-semibold text-gray-600 leading-relaxed">
+                                            <p className="p-4 pt-0 text-xs font-semibold text-gray-700 leading-relaxed">
                                                 {section.content}
                                             </p>
                                         </motion.div>

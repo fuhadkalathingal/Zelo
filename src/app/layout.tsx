@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import StoreInitializer from "@/components/layout/StoreInitializer";
 
 export const metadata: Metadata = {
   title: "Zelo | Groceries at Lowest Prices",
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50">
+        <StoreInitializer />
         <Header />
         {children}
       </body>

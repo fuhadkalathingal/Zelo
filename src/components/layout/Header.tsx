@@ -16,17 +16,6 @@ export default function Header() {
     const cartItemCount = useCartStore((state) => state.getItemCount());
     const user = useAuthStore((state) => state.user);
 
-    useEffect(() => {
-        const unsubscribeProducts = useProductStore.getState().initializeProductsListener();
-        const unsubscribeAgents = useAgentStore.getState().initializeAgentsListener();
-        const unsubscribeOrders = useOrderStore.getState().initializeOrdersListener();
-        return () => {
-            unsubscribeProducts();
-            unsubscribeAgents();
-            unsubscribeOrders();
-        };
-    }, []);
-
     // Hide on admin routes
     if (pathname.startsWith('/admin') || pathname.startsWith('/agent')) return null;
 
@@ -59,7 +48,7 @@ export default function Header() {
                     <div className="flex-1 max-w-3xl hidden sm:block mx-8">
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Search className="h-5 w-5 text-gray-500 group-hover:text-emerald-500 transition-colors" strokeWidth={2.5} />
+                                <Search className="h-5 w-5 text-gray-600 group-hover:text-emerald-500 transition-colors" strokeWidth={2.5} />
                             </div>
                             <input
                                 type="text"
@@ -70,7 +59,7 @@ export default function Header() {
                     </div>
 
                     {/* Mobile Search Icon (Shows on very small screens instead of full bar) */}
-                    <Link href="/search" className="sm:hidden p-2 text-gray-600 hover:bg-gray-50 rounded-full ml-auto">
+                    <Link href="/search" className="sm:hidden p-2 text-gray-700 hover:bg-gray-50 rounded-full ml-auto">
                         <Search className="w-6 h-6" />
                     </Link>
 
@@ -92,7 +81,7 @@ export default function Header() {
                                     <span>Login</span>
                                 </Link>
 
-                                <Link href="/login" className="md:hidden p-2 text-gray-600 hover:bg-gray-50 rounded-full">
+                                <Link href="/login" className="md:hidden p-2 text-gray-700 hover:bg-gray-50 rounded-full">
                                     <UserCircle2 className="w-6 h-6" />
                                 </Link>
                             </>

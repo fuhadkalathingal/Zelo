@@ -26,7 +26,7 @@ export default function CategoriesPage() {
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
                     {CATEGORIES.map((cat) => (
                         <button key={cat.name} onClick={() => setActiveCategory(cat.name)} className="flex flex-col items-center gap-2">
-                            <div className={`w-full aspect-square rounded-2xl ${cat.bg || 'bg-gray-100 text-gray-600'} border ${activeCategory === cat.name ? 'border-emerald-400' : 'border-white'} shadow-sm flex items-center justify-center text-4xl`}>
+                            <div className={`w-full aspect-square rounded-2xl ${cat.bg || 'bg-gray-100 text-gray-700'} border ${activeCategory === cat.name ? 'border-emerald-400' : 'border-white'} shadow-sm flex items-center justify-center text-4xl`}>
                                 {cat.icon}
                             </div>
                             <span className={`text-xs font-bold text-center leading-tight ${activeCategory === cat.name ? 'text-emerald-700' : 'text-gray-700'}`}>{cat.name}</span>
@@ -43,7 +43,7 @@ export default function CategoriesPage() {
                                 <div className="w-14 h-14 rounded-lg bg-gray-50 flex items-center justify-center text-2xl">{product.imageUrl}</div>
                                 <div className="flex-1">
                                     <p className="font-bold text-sm text-gray-900">{product.name}</p>
-                                    <p className="text-xs text-gray-600">{product.unit}</p>
+                                    <p className="text-xs text-gray-700">{product.unit}</p>
                                     <p className="font-extrabold text-sm text-gray-900 mt-1">₹{product.discountPrice || product.price}</p>
                                 </div>
                                 {qty === 0 ? (
