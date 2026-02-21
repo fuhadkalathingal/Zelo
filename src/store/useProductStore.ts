@@ -33,6 +33,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
             }
         }, (error) => {
             console.error("Error listening to products: ", error);
+            set({ loading: false });
         });
 
         return unsubscribe;

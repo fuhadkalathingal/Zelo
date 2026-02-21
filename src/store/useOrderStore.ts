@@ -28,6 +28,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       set({ orders: ordersData, loading: false });
     }, (error) => {
       console.error("Error listening to orders: ", error);
+      set({ loading: false });
     });
 
     return unsubscribe;

@@ -27,6 +27,7 @@ export const useAgentStore = create<AgentStore>((set, get) => ({
             set({ agents: agentsData, loading: false });
         }, (error) => {
             console.error("Error listening to agents: ", error);
+            set({ loading: false });
         });
 
         return unsubscribe;
