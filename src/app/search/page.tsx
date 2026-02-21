@@ -25,7 +25,7 @@ export default function SearchPage() {
                 <input
                     type="text"
                     placeholder="Search for 'Bread' or 'Milk'"
-                    className="bg-transparent border-none outline-none w-full font-bold text-gray-900 placeholder:font-semibold placeholder:text-gray-400"
+                    className="bg-transparent border-none outline-none w-full font-bold text-gray-900 placeholder:font-semibold placeholder:text-gray-500"
                     autoFocus
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -40,7 +40,7 @@ export default function SearchPage() {
                             <button
                                 key={term}
                                 onClick={() => setQuery(term)}
-                                className="px-5 py-2.5 bg-gray-50 border border-gray-100 rounded-full text-sm font-bold text-gray-800 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors shadow-sm"
+                                className="px-5 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm font-bold text-gray-800 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors shadow-sm"
                             >
                                 {term}
                             </button>
@@ -56,27 +56,27 @@ export default function SearchPage() {
 
                     {filteredProducts.length === 0 ? (
                         <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                            <p className="font-bold text-gray-500">No products found for "{query}"</p>
-                            <p className="text-xs font-semibold text-gray-400 mt-1">Try searching for something else!</p>
+                            <p className="font-bold text-gray-600">No products found for "{query}"</p>
+                            <p className="text-xs font-semibold text-gray-500 mt-1">Try searching for something else!</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                             {filteredProducts.map(product => {
                                 const qty = items.find(i => i.id === product.id)?.quantity || 0;
                                 return (
-                                    <Link href={`/product/${product.id}`} key={product.id} className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
+                                    <Link href={`/product/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
                                         <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-pointer">
                                             {product.imageUrl}
                                         </div>
                                         <div>
                                             <p className="font-extrabold text-sm text-gray-900 line-clamp-2 leading-tight">{product.name}</p>
-                                            <p className="text-[10px] font-bold text-gray-500 mt-0.5">{product.unit}</p>
+                                            <p className="text-[10px] font-bold text-gray-600 mt-0.5">{product.unit}</p>
                                         </div>
                                         <div className="mt-auto flex items-center justify-between pt-2">
                                             <div className="flex flex-col">
                                                 {product.discountPrice ? (
                                                     <>
-                                                        <span className="text-[10px] text-gray-400 line-through font-bold">₹{product.price}</span>
+                                                        <span className="text-[10px] text-gray-500 line-through font-bold">₹{product.price}</span>
                                                         <span className="font-black text-sm text-gray-900 tracking-tight">₹{product.discountPrice}</span>
                                                     </>
                                                 ) : (

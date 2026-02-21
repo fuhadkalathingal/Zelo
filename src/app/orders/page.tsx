@@ -24,10 +24,10 @@ export default function OrdersPage() {
                 <h1 className="text-2xl font-extrabold text-gray-900 mt-3 mb-4">Order History</h1>
 
                 {myOrders.length === 0 ? (
-                    <div className="bg-white rounded-3xl p-8 border border-gray-100 flex flex-col items-center justify-center text-center">
+                    <div className="bg-white rounded-3xl p-8 border border-gray-200 flex flex-col items-center justify-center text-center">
                         <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mb-4">🛒</div>
                         <h3 className="font-extrabold text-gray-900 text-lg">No Orders Yet</h3>
-                        <p className="text-sm font-semibold text-gray-500 mt-2 max-w-xs">Looks like you haven't bought anything yet. Go ahead and explore our catalog!</p>
+                        <p className="text-sm font-semibold text-gray-600 mt-2 max-w-xs">Looks like you haven't bought anything yet. Go ahead and explore our catalog!</p>
                         <button onClick={() => router.push('/')} className="mt-6 bg-emerald-500 text-white font-black uppercase tracking-widest px-6 py-3 rounded-xl shadow-sm hover:bg-emerald-600 transition-colors">
                             Start Shopping
                         </button>
@@ -37,12 +37,12 @@ export default function OrdersPage() {
                         {myOrders.map((order) => {
                             const isDelivered = order.status === 'Delivered';
                             return (
-                                <div key={order.orderId} className={`bg-white rounded-3xl p-5 md:p-6 border overflow-hidden relative ${isDelivered ? 'border-gray-100' : 'border-emerald-200 bg-gradient-to-br from-white to-emerald-50/30'}`}>
+                                <div key={order.orderId} className={`bg-white rounded-3xl p-5 md:p-6 border overflow-hidden relative ${isDelivered ? 'border-gray-200' : 'border-emerald-200 bg-gradient-to-br from-white to-emerald-50/30'}`}>
                                     {!isDelivered && <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 opacity-50"></div>}
 
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleString()}</p>
+                                            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleString()}</p>
                                             <p className="font-extrabold text-sm md:text-base text-gray-900 mt-1 cursor-pointer hover:underline" onClick={() => router.push(`/order/${order.orderId}`)}>Order #{order.orderId}</p>
                                         </div>
                                         <span className={`text-[10px] px-3 py-1.5 rounded-lg font-black uppercase tracking-widest ${isDelivered ? 'bg-gray-100 text-gray-600' : 'bg-emerald-100 text-emerald-800 shadow-sm'}`}>
@@ -64,13 +64,13 @@ export default function OrdersPage() {
                                             )}
                                         </div>
                                         <div className="ml-auto text-right">
-                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Total</p>
+                                            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Total</p>
                                             <p className="font-black text-lg text-gray-900 tracking-tight">₹{order.totalAmount.toFixed(2)}</p>
                                         </div>
                                     </div>
 
-                                    <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
-                                        <p className="text-xs font-semibold text-gray-500 truncate max-w-[200px] md:max-w-xs flex items-center gap-1.5">
+                                    <div className="mt-5 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                        <p className="text-xs font-semibold text-gray-600 truncate max-w-[200px] md:max-w-xs flex items-center gap-1.5">
                                             📍 {order.deliveryAddress.flat ? `${order.deliveryAddress.flat}, ` : ''}{order.deliveryAddress.area}
                                         </p>
                                         <button

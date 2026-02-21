@@ -30,7 +30,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     return (
         <div className="min-h-screen bg-gray-50 pb-28 md:pb-10">
             {/* Mobile Top Header */}
-            <div className="bg-white p-4 flex items-center justify-between sticky top-0 z-30 shadow-sm border-b border-gray-100 md:hidden">
+            <div className="bg-white p-4 flex items-center justify-between sticky top-0 z-30 shadow-sm border-b border-gray-200 md:hidden">
                 <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
                     <ChevronLeft className="w-6 h-6 text-gray-700" />
                 </button>
@@ -47,7 +47,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <main className="max-w-5xl mx-auto md:p-6 md:grid md:grid-cols-2 md:gap-8 lg:gap-12 md:mt-8">
 
                 {/* Left Column: Image Gallery (Mobile top) */}
-                <div className="bg-white md:rounded-3xl md:border md:border-gray-100 md:p-8 flex items-center justify-center p-12 py-20 relative overflow-hidden group">
+                <div className="bg-white md:rounded-3xl md:border md:border-gray-200 md:p-8 flex items-center justify-center p-12 py-20 relative overflow-hidden group">
                     {/* Background Blob */}
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -78,19 +78,19 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <div className="p-5 md:p-0 space-y-6">
                     {/* Title & Brand */}
                     <div className="space-y-2">
-                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-extrabold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-extrabold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                             Zelo Fresh <ChevronRight className="w-3 h-3" />
                         </motion.p>
                         <motion.h1 initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
                             {product.name}
                         </motion.h1>
-                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm font-bold text-gray-500 bg-gray-100 w-fit px-3 py-1 rounded-md">
+                        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm font-bold text-gray-600 bg-gray-100 w-fit px-3 py-1 rounded-md">
                             Net Wt: {product.unit}
                         </motion.p>
                     </div>
 
                     {/* Price Block Zepto Style */}
-                    <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm relative overflow-hidden">
+                    <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-10 opacity-50"></div>
                         <div className="flex flex-col gap-1">
                             {product.discountPrice ? (
@@ -98,11 +98,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     <div className="flex items-end gap-3">
                                         <span className="text-3xl font-black text-emerald-700 tracking-tight">₹{product.discountPrice}</span>
                                         <div className="flex flex-col pb-1">
-                                            <span className="text-xs text-gray-400 font-bold line-through">MRP ₹{product.price}</span>
+                                            <span className="text-xs text-gray-500 font-bold line-through">MRP ₹{product.price}</span>
                                             <span className="text-[10px] text-emerald-600 font-extrabold uppercase tracking-wider">Save ₹{product.price - product.discountPrice}</span>
                                         </div>
                                     </div>
-                                    <p className="text-[10px] text-gray-400 font-semibold">(Inclusive of all taxes)</p>
+                                    <p className="text-[10px] text-gray-500 font-semibold">(Inclusive of all taxes)</p>
                                 </>
                             ) : (
                                 <div className="flex items-end gap-3">
@@ -111,12 +111,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             )}
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <div className="mt-5 pt-4 border-t border-gray-200 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <span className="bg-orange-100 text-orange-600 p-1.5 rounded-lg"><Tag className="w-4 h-4" /></span>
                                 <span className="text-xs font-extrabold text-gray-700">Get at ₹{Math.max(1, finalPrice - 20)} with bank offers</span>
                             </div>
-                            <ChevronRight className="w-4 h-4 text-gray-400" />
+                            <ChevronRight className="w-4 h-4 text-gray-500" />
                         </div>
                     </motion.div>
 
@@ -137,12 +137,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     </motion.div>
 
                     {/* Accordions */}
-                    <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                         {[
                             { id: 'offers', title: 'Coupons & Offers', icon: Tag, content: 'Get 10% off with VISA Canara Credit Cards. Get assured cashback upto ₹25 with BHIM.' },
                             { id: 'desc', title: 'Product Details', icon: Info, content: 'Freshly sourced daily from local farms. Handpicked and double-checked for supreme quality before delivery.' },
                         ].map((section) => (
-                            <div key={section.id} className="border-b border-gray-100 last:border-0">
+                            <div key={section.id} className="border-b border-gray-200 last:border-0">
                                 <button
                                     onClick={() => setActiveAccordion(activeAccordion === section.id ? null : section.id)}
                                     className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
@@ -150,7 +150,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                     <h3 className="font-extrabold text-sm text-gray-800 flex items-center gap-2">
                                         <section.icon className="w-4 h-4 text-emerald-500" /> {section.title}
                                     </h3>
-                                    <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${activeAccordion === section.id ? 'rotate-90' : ''}`} />
+                                    <ChevronRight className={`w-4 h-4 text-gray-500 transition-transform ${activeAccordion === section.id ? 'rotate-90' : ''}`} />
                                 </button>
                                 <AnimatePresence>
                                     {activeAccordion === section.id && (
@@ -160,7 +160,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                             exit={{ height: 0, opacity: 0 }}
                                             className="overflow-hidden bg-gray-50/50"
                                         >
-                                            <p className="p-4 pt-0 text-xs font-semibold text-gray-500 leading-relaxed">
+                                            <p className="p-4 pt-0 text-xs font-semibold text-gray-600 leading-relaxed">
                                                 {section.content}
                                             </p>
                                         </motion.div>
@@ -197,7 +197,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             </main>
 
             {/* Sticky Mobile Add To Cart Bottom Bar */}
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-40 md:hidden animate-in slide-in-from-bottom-5">
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 pb-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-40 md:hidden animate-in slide-in-from-bottom-5">
                 {qty === 0 ? (
                     <button onClick={() => addItem(product)} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
                         Add to Cart

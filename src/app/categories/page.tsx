@@ -39,11 +39,11 @@ export default function CategoriesPage() {
                     {filteredProducts.map((product) => {
                         const qty = getQty(product.id);
                         return (
-                            <div key={product.id} className="bg-white border border-gray-100 rounded-xl p-3 flex items-center gap-3">
+                            <div key={product.id} className="bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3">
                                 <div className="w-14 h-14 rounded-lg bg-gray-50 flex items-center justify-center text-2xl">{product.imageUrl}</div>
                                 <div className="flex-1">
                                     <p className="font-bold text-sm text-gray-900">{product.name}</p>
-                                    <p className="text-xs text-gray-500">{product.unit}</p>
+                                    <p className="text-xs text-gray-600">{product.unit}</p>
                                     <p className="font-extrabold text-sm text-gray-900 mt-1">₹{product.discountPrice || product.price}</p>
                                 </div>
                                 {qty === 0 ? (

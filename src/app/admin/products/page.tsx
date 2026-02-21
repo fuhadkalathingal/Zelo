@@ -141,18 +141,18 @@ export default function AdminProductsPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight">Product Catalog</h1>
-                    <p className="text-gray-500 font-medium">Manage your {products.length} active inventory items.</p>
+                    <p className="text-gray-600 font-medium">Manage your {products.length} active inventory items.</p>
                 </div>
                 <button onClick={openAddModal} className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2">
                     <Plus className="w-5 h-5" /> Add New Product
                 </button>
             </div>
 
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Toolbar */}
-                <div className="p-4 border-b border-gray-100 flex gap-4 bg-gray-50/50">
+                <div className="p-4 border-b border-gray-200 flex gap-4 bg-gray-50/50">
                     <div className="flex-1 relative">
-                        <Search className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" />
+                        <Search className="w-5 h-5 text-gray-500 absolute left-3 top-2.5" />
                         <input
                             type="text"
                             placeholder="Search products..."
@@ -172,7 +172,7 @@ export default function AdminProductsPage() {
                     ) : (
                         <table className="w-full text-left border-collapse min-w-[800px]">
                             <thead>
-                                <tr className="bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-gray-100">
+                                <tr className="bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-600 border-b border-gray-200">
                                     <th className="p-4 rounded-tl-3xl">Item Name</th>
                                     <th className="p-4">Category</th>
                                     <th className="p-4">Stock</th>
@@ -191,7 +191,7 @@ export default function AdminProductsPage() {
                                     >
                                         <td className="p-4">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 shrink-0 bg-gray-50 rounded-xl flex items-center justify-center text-2xl border border-gray-100 shadow-sm overflow-hidden">
+                                                <div className="w-12 h-12 shrink-0 bg-gray-50 rounded-xl flex items-center justify-center text-2xl border border-gray-200 shadow-sm overflow-hidden">
                                                     <ProductImage
                                                         imageUrl={prod.imageUrl}
                                                         alt={prod.name}
@@ -201,7 +201,7 @@ export default function AdminProductsPage() {
                                                 </div>
                                                 <div>
                                                     <div className="font-extrabold text-sm text-gray-900">{prod.name}</div>
-                                                    <div className="text-[10px] font-bold text-gray-500 mt-0.5">{prod.unit}</div>
+                                                    <div className="text-[10px] font-bold text-gray-600 mt-0.5">{prod.unit}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -223,13 +223,13 @@ export default function AdminProductsPage() {
                                         </td>
                                         <td className="p-4 whitespace-nowrap">
                                             <div className="font-black text-sm text-gray-900">₹{prod.discountPrice || prod.price}</div>
-                                            {prod.discountPrice && <div className="text-[10px] font-bold text-gray-500 line-through">MRP ₹{prod.price}</div>}
+                                            {prod.discountPrice && <div className="text-[10px] font-bold text-gray-600 line-through">MRP ₹{prod.price}</div>}
                                         </td>
                                         <td className="p-4 text-right whitespace-nowrap">
-                                            <button onClick={() => openEditModal(prod)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors inline-block">
+                                            <button onClick={() => openEditModal(prod)} className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors inline-block">
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
-                                            <button onClick={() => handleDelete(prod.id, prod.name)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors inline-block ml-1">
+                                            <button onClick={() => handleDelete(prod.id, prod.name)} className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors inline-block ml-1">
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </td>
@@ -240,7 +240,7 @@ export default function AdminProductsPage() {
                     )}
                     {!loading && filteredProducts.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="font-bold text-gray-500">No products found matching &quot;{searchTerm}&quot;</p>
+                            <p className="font-bold text-gray-600">No products found matching &quot;{searchTerm}&quot;</p>
                         </div>
                     )}
                 </div>
@@ -252,11 +252,11 @@ export default function AdminProductsPage() {
                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" />
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden">
-                            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+                            <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50/50">
                                 <h3 className="text-xl font-black text-gray-900">
                                     {editingProduct ? 'Edit Product' : 'Add New Product'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -298,7 +298,7 @@ export default function AdminProductsPage() {
                                                     accept="image/*"
                                                     onChange={handleImageUpload}
                                                     disabled={isUploading}
-                                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all cursor-pointer disabled:opacity-50"
+                                                    className="w-full text-sm text-gray-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-all cursor-pointer disabled:opacity-50"
                                                 />
                                                 {isUploading && <p className="text-xs text-emerald-600 mt-2 font-bold animate-pulse">Uploading image securely...</p>}
                                             </div>

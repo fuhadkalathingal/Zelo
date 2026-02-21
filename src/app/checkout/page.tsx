@@ -189,7 +189,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-32">
-            <div className="bg-white p-4 flex items-center gap-4 sticky top-0 z-10 border-b border-gray-100 shadow-sm">
+            <div className="bg-white p-4 flex items-center gap-4 sticky top-0 z-10 border-b border-gray-200 shadow-sm">
                 <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
                     <ChevronLeft className="w-6 h-6 text-gray-700" />
                 </button>
@@ -197,13 +197,13 @@ export default function CheckoutPage() {
             </div>
 
             <div className="max-w-3xl mx-auto p-4 space-y-4">
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
+                <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
                     <h3 className="font-bold text-gray-900 flex items-center gap-2 mb-4"><Clock className="w-4 h-4 text-orange-500" /> Delivery Slot</h3>
                     <p className="text-sm font-bold">{batchInfo.title}</p>
-                    <p className="text-xs text-gray-500">{batchInfo.time}</p>
+                    <p className="text-xs text-gray-600">{batchInfo.time}</p>
                 </div>
 
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
+                <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="font-bold text-gray-900 flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-emerald-500" /> Delivery Address
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
                     </div>
 
                     {user?.savedAddresses?.[0] ? (
-                        <p className="text-sm font-semibold text-gray-900 p-4 border border-gray-100 rounded-xl bg-gray-50/50 leading-relaxed shadow-inner">
+                        <p className="text-sm font-semibold text-gray-900 p-4 border border-gray-200 rounded-xl bg-gray-50/50 leading-relaxed shadow-inner">
                             {user.savedAddresses[0].flat ? `${user.savedAddresses[0].flat}, ` : ''}{user.savedAddresses[0].area}
                             <br />
                             Contact: <span className="font-bold text-gray-900">{user.phone}</span>
@@ -229,19 +229,19 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Payment Method Selector */}
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
-                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">
+                <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
+                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">
                         Payment Method
                     </h3>
                     <div className="space-y-3">
-                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'UPI' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'UPI' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-200 bg-white hover:border-gray-200'}`}>
                             <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${paymentMethod === 'UPI' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'UPI' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-500'}`}>
                                     <CreditCard className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className={`font-bold text-sm ${paymentMethod === 'UPI' ? 'text-emerald-900' : 'text-gray-900'}`}>Pay via UPI</p>
-                                    <p className="text-[10px] font-semibold text-gray-500">Google Pay, PhonePe, Paytm</p>
+                                    <p className="text-[10px] font-semibold text-gray-600">Google Pay, PhonePe, Paytm</p>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'UPI' ? 'border-emerald-500' : 'border-gray-300'}`}>
@@ -250,14 +250,14 @@ export default function CheckoutPage() {
                             <input type="radio" className="hidden" checked={paymentMethod === 'UPI'} onChange={() => setPaymentMethod('UPI')} />
                         </label>
 
-                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                        <label className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${paymentMethod === 'COD' ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-200 bg-white hover:border-gray-200'}`}>
                             <div className="flex items-center gap-3">
-                                <div className={`p-2 rounded-lg ${paymentMethod === 'COD' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
+                                <div className={`p-2 rounded-lg ${paymentMethod === 'COD' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-50 text-gray-500'}`}>
                                     <Banknote className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <p className={`font-bold text-sm ${paymentMethod === 'COD' ? 'text-emerald-900' : 'text-gray-900'}`}>Cash on Delivery</p>
-                                    <p className="text-[10px] font-semibold text-gray-500">Pay at your doorstep</p>
+                                    <p className="text-[10px] font-semibold text-gray-600">Pay at your doorstep</p>
                                 </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'COD' ? 'border-emerald-500' : 'border-gray-300'}`}>
@@ -269,15 +269,15 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Order Summary Small */}
-                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
-                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">
+                <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-5">
+                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">
                         Order Summary ({items.length} items)
                     </h3>
                     <div className="space-y-3">
                         {items.map(item => (
-                            <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-lg border border-gray-100/50">
+                            <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-lg border border-gray-200/50">
                                 <div className="flex items-center gap-3">
-                                    <div className="bg-white border border-gray-100 w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm overflow-hidden">
+                                    <div className="bg-white border border-gray-200 w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm overflow-hidden">
                                         <ProductImage imageUrl={item.imageUrl} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-lg" />
                                     </div>
                                     <div>
@@ -292,12 +292,12 @@ export default function CheckoutPage() {
                 </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center pb-6">
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center pb-6">
                 <div className="max-w-3xl w-full flex gap-4 items-center">
                     <button
                         onClick={handleConfirmOrder}
                         disabled={isProcessing || !user?.savedAddresses?.[0]}
-                        className="flex-1 bg-gray-900 hover:bg-black disabled:bg-gray-300 disabled:text-gray-500 text-white font-black tracking-widest uppercase text-sm py-5 rounded-2xl shadow-xl active:scale-[0.98] transition-all flex items-center justify-between px-8"
+                        className="flex-1 bg-gray-900 hover:bg-black disabled:bg-gray-300 disabled:text-gray-600 text-white font-black tracking-widest uppercase text-sm py-5 rounded-2xl shadow-xl active:scale-[0.98] transition-all flex items-center justify-between px-8"
                     >
                         <span>{isProcessing ? 'Processing Payment...' : (paymentMethod === 'COD' ? 'Place Order' : 'Pay Securely')}</span>
                         {!isProcessing && <span className="text-emerald-400">₹{total.toFixed(2)}</span>}

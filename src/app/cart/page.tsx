@@ -56,7 +56,7 @@ export default function CartPage() {
                         <div className="absolute overflow-hidden w-full h-full rounded-full opacity-50 bg-gradient-to-tr from-transparent via-emerald-100 to-transparent mix-blend-overlay"></div>
                     </div>
                     <h2 className="text-xl font-extrabold text-gray-900 mb-2">Your cart is empty</h2>
-                    <p className="text-gray-500 mb-8 max-w-[250px]">Looks like you haven&apos;t added anything to your cart yet.</p>
+                    <p className="text-gray-600 mb-8 max-w-[250px]">Looks like you haven&apos;t added anything to your cart yet.</p>
                     <button onClick={() => router.push('/')} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-sm transition-all active:scale-[0.98]">
                         Start Shopping
                     </button>
@@ -94,25 +94,25 @@ export default function CartPage() {
                         </div>
 
                         {/* Cart Items List */}
-                        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden divide-y divide-gray-50 mt-6">
-                            <div className="p-4 bg-gray-50/30 flex justify-between items-center border-b border-gray-100">
+                        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-200 overflow-hidden divide-y divide-gray-50 mt-6">
+                            <div className="p-4 bg-gray-50/30 flex justify-between items-center border-b border-gray-200">
                                 <h2 className="font-extrabold text-lg text-gray-900">My Cart</h2>
-                                <span className="text-gray-500 text-sm font-medium">{count} items</span>
+                                <span className="text-gray-600 text-sm font-medium">{count} items</span>
                             </div>
                             {items.map((item) => (
                                 <div key={item.id} className="p-4 flex items-center gap-4">
-                                    <div className="w-16 h-16 bg-gray-50 rounded-xl shrink-0 p-1 flex items-center justify-center flex-col relative overflow-hidden border border-gray-100">
+                                    <div className="w-16 h-16 bg-gray-50 rounded-xl shrink-0 p-1 flex items-center justify-center flex-col relative overflow-hidden border border-gray-200">
                                         <ProductImage imageUrl={item.imageUrl} alt={item.name} className="w-full h-full object-cover" emojiClassName="text-3xl z-10 block leading-none select-none" />
                                         <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-gray-200/50 to-transparent"></div>
                                     </div>
 
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-bold text-gray-900 truncate text-sm">{item.name}</h3>
-                                        <p className="text-xs text-gray-500 mt-0.5">{item.unit}</p>
+                                        <p className="text-xs text-gray-600 mt-0.5">{item.unit}</p>
                                         <div className="mt-2 flex items-center gap-2">
                                             <span className="font-bold text-gray-900 text-sm">₹{item.discountPrice || item.price}</span>
                                             {item.discountPrice && (
-                                                <span className="text-xs text-gray-400 line-through">₹{item.price}</span>
+                                                <span className="text-xs text-gray-500 line-through">₹{item.price}</span>
                                             )}
                                         </div>
                                     </div>
@@ -134,7 +134,7 @@ export default function CartPage() {
                     {/* Right Column: Checkout details */}
                     <div className="w-full lg:w-[400px] shrink-0 space-y-4">
                         {/* Bill Details */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sticky top-24">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sticky top-24">
                             <h2 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <Receipt className="w-4 h-4" /> Bill Details
                             </h2>
@@ -177,10 +177,10 @@ export default function CartPage() {
 
             {/* Mobile Checkout Bottom Bar */}
             {items.length > 0 && (
-                <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-6 sm:pb-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center lg:hidden">
+                <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 pb-6 sm:pb-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center lg:hidden">
                     <div className="max-w-xl w-full flex gap-4 items-center pl-2">
                         <div className="flex flex-col">
-                            <span className="text-xs text-gray-500 font-medium tracking-wide uppercase">Total</span>
+                            <span className="text-xs text-gray-600 font-medium tracking-wide uppercase">Total</span>
                             <span className="text-xl font-extrabold text-gray-900 text-left">₹{(total + (total >= 199 ? 0 : 29) + 4).toFixed(2)}</span>
                         </div>
                         <button

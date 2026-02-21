@@ -98,7 +98,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
                 <div className="bg-white text-gray-900 rounded-2xl p-5 shadow-lg border border-emerald-100 flex items-center justify-between mt-2">
                     <div>
-                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">State</p>
+                        <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">State</p>
                         <p className="text-xl font-black text-emerald-600 leading-none">{currentOrder.status}</p>
                     </div>
                     {currentOrder.status === 'Delivered' ? (
@@ -126,7 +126,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
                         <div>
                             <p className="font-extrabold text-sm text-gray-900">{assignedAgent.name}</p>
-                            <p className="text-[10px] font-bold tracking-widest uppercase text-gray-500">Zelo Delivery Partner</p>
+                            <p className="text-[10px] font-bold tracking-widest uppercase text-gray-600">Zelo Delivery Partner</p>
                             <p className="text-xs font-bold text-emerald-600 mt-1 uppercase tracking-wider">{assignedAgent.vehicleNo}</p>
                         </div>
                         <a href={`tel:${assignedAgent.phone}`} className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
@@ -148,8 +148,8 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                                         {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-2.5 h-2.5 bg-white rounded-full" />}
                                     </div>
                                     <div className="flex-1 pt-1 bg-white pr-2 pb-2">
-                                        <h4 className={`font-extrabold text-base ${isCompleted || isActive ? 'text-gray-900' : 'text-gray-500'}`}>{step.title}</h4>
-                                        <p className={`text-xs font-bold mt-0.5 ${isCompleted || isActive ? 'text-emerald-700' : 'text-gray-400'}`}>{step.time}</p>
+                                        <h4 className={`font-extrabold text-base ${isCompleted || isActive ? 'text-gray-900' : 'text-gray-600'}`}>{step.title}</h4>
+                                        <p className={`text-xs font-bold mt-0.5 ${isCompleted || isActive ? 'text-emerald-700' : 'text-gray-500'}`}>{step.time}</p>
                                     </div>
                                 </motion.div>
                             )
@@ -157,18 +157,18 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Items Ordered ({currentOrder.items.length})</h3>
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200">
+                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">Items Ordered ({currentOrder.items.length})</h3>
                     <div className="space-y-3">
                         {currentOrder.items.map(item => (
                             <div key={item.productId} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-md overflow-hidden flex items-center justify-center bg-white border border-gray-100">
+                                    <div className="w-8 h-8 rounded-md overflow-hidden flex items-center justify-center bg-white border border-gray-200">
                                         <ProductImage imageUrl={item.imageUrl} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-lg" />
                                     </div>
                                     <div>
                                         <p className="font-bold text-xs text-gray-900">{item.name}</p>
-                                        <p className="text-[10px] text-gray-500 font-semibold">{item.unit} x {item.qty}</p>
+                                        <p className="text-[10px] text-gray-600 font-semibold">{item.unit} x {item.qty}</p>
                                     </div>
                                 </div>
                                 <span className="font-extrabold text-sm text-gray-900">₹{(item.price * item.qty).toFixed(2)}</span>

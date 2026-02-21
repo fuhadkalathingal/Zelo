@@ -70,7 +70,7 @@ export default function HomePage() {
           const discountPercentage = prod.discountPrice ? Math.round(((prod.price - prod.discountPrice) / prod.price) * 100) : null;
 
           return (
-            <div key={prod.id} className="bg-white rounded-[20px] p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
+            <div key={prod.id} className="bg-white rounded-[20px] p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-200 flex flex-col relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
 
               {/* Discount Badge */}
               {discountPercentage && (
@@ -80,8 +80,8 @@ export default function HomePage() {
               )}
 
               {/* Image Space */}
-              <Link href={`/product/${prod.id}`} className="w-full aspect-square bg-[#FAFAFA] rounded-2xl flex items-center justify-center text-7xl mb-4 overflow-hidden relative group-hover:bg-[#F3F4F6] transition-colors border border-gray-50 cursor-pointer">
-                <ProductImage imageUrl={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" emojiClassName="drop-shadow-lg scale-110 group-hover:scale-125 transition-transform duration-300" />
+              <Link href={`/product/${prod.id}`} className="w-full aspect-square bg-[#FAFAFA] rounded-2xl flex items-center justify-center text-7xl mb-4 overflow-hidden relative group-hover:bg-[#F3F4F6] transition-colors border border-gray-100 cursor-pointer">
+                <ProductImage imageUrl={prod.imageUrl} alt={prod.name} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300" emojiClassName="drop-shadow-lg scale-110 group-hover:scale-125 transition-transform duration-300" />
               </Link>
 
               {/* Delivery Meta */}
@@ -92,12 +92,12 @@ export default function HomePage() {
 
               {/* Details */}
               <h3 className="font-bold text-gray-900 text-sm leading-snug flex-1">{prod.name}</h3>
-              <p className="text-xs text-gray-500 mt-1 mb-4 font-medium">{prod.unit}</p>
+              <p className="text-xs text-gray-600 mt-1 mb-4 font-medium">{prod.unit}</p>
 
               {/* Price & Add Area */}
               <div className="flex items-end justify-between mt-auto">
                 <div className="flex flex-col">
-                  {prod.discountPrice && <span className="text-[10px] text-gray-400 line-through font-semibold leading-none mb-0.5">₹{prod.price}</span>}
+                  {prod.discountPrice && <span className="text-[10px] text-gray-500 line-through font-semibold leading-none mb-0.5">₹{prod.price}</span>}
                   <span className="font-extrabold text-gray-900 text-base leading-none">₹{prod.discountPrice || prod.price}</span>
                 </div>
 
@@ -164,7 +164,7 @@ export default function HomePage() {
             onClick={() => setActiveCategory(null)}
             className={`snap-start shrink-0 flex flex-col items-center gap-1.5 group w-14 sm:w-16 ${activeCategory === null ? 'opacity-100' : 'opacity-60 saturate-50'}`}
           >
-            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === null ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100' : 'bg-gray-50 border-gray-100 group-hover:border-emerald-200'}`}>
+            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === null ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100' : 'bg-gray-50 border-gray-200 group-hover:border-emerald-200'}`}>
               🏠
             </div>
             <span className={`text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === null ? 'text-emerald-700' : 'text-gray-600 group-hover:text-emerald-600'}`}>
@@ -178,7 +178,7 @@ export default function HomePage() {
               onClick={() => setActiveCategory(cat.name)}
               className={`snap-start shrink-0 flex flex-col items-center gap-1.5 group w-14 sm:w-16 ${activeCategory === cat.name ? 'opacity-100' : 'opacity-60 saturate-50 hover:opacity-100 hover:saturate-100'}`}
             >
-              <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === cat.name ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100 scale-105' : 'bg-gray-50 border-gray-100 group-hover:border-emerald-200 group-hover:bg-emerald-50/30'}`}>
+              <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-sm border transition-all ${activeCategory === cat.name ? 'bg-emerald-50 border-emerald-300 shadow-emerald-100 scale-105' : 'bg-gray-50 border-gray-200 group-hover:border-emerald-200 group-hover:bg-emerald-50/30'}`}>
                 {cat.icon}
               </div>
               <span className={`text-[9px] sm:text-[10px] font-bold text-center leading-tight tracking-tight transition-colors ${activeCategory === cat.name ? 'text-emerald-700' : 'text-gray-600 group-hover:text-emerald-600'}`}>
@@ -194,7 +194,7 @@ export default function HomePage() {
               <h2 className="text-xl md:text-2xl text-gray-900 font-extrabold flex items-center gap-2">
                 <span className="text-2xl">{CATEGORIES.find(c => c.name === activeCategory)?.icon || '🥦'}</span> {activeCategory}
               </h2>
-              <button onClick={() => setActiveCategory(null)} className="text-xs font-bold text-gray-500 hover:text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full uppercase tracking-wide">
+              <button onClick={() => setActiveCategory(null)} className="text-xs font-bold text-gray-600 hover:text-gray-800 bg-gray-100 px-3 py-1.5 rounded-full uppercase tracking-wide">
                 Clear Filter
               </button>
             </div>

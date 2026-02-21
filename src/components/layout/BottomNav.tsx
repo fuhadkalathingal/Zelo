@@ -21,7 +21,7 @@ export default function BottomNav() {
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.06)] z-50 md:hidden">
+        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.06)] z-50 md:hidden">
             <div className="flex justify-around items-center px-2 py-3 max-w-xl mx-auto">
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
@@ -34,8 +34,8 @@ export default function BottomNav() {
                                     {tab.badge}
                                 </span>
                             ) : null}
-                            <Icon className={`w-6 h-6 transition-all ${isActive ? 'text-emerald-500 scale-110' : 'text-gray-400 hover:text-gray-600'}`} strokeWidth={isActive ? 2.5 : 2} />
-                            <span className={`text-[10px] font-bold transition-colors ${isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
+                            <Icon className={`w-6 h-6 transition-all ${isActive ? 'text-emerald-500 scale-110' : 'text-gray-500 hover:text-gray-600'}`} strokeWidth={isActive ? 2.5 : 2} />
+                            <span className={`text-[10px] font-bold transition-colors ${isActive ? 'text-emerald-500' : 'text-gray-500'}`}>
                                 {tab.name}
                             </span>
                         </Link>

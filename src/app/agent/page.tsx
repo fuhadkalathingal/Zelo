@@ -104,7 +104,7 @@ export default function AgentPage() {
   if (user.role !== 'agent') {
     return (
       <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-gray-100 p-6 md:p-8 space-y-6">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-gray-200 p-6 md:p-8 space-y-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl font-black text-gray-900">Delivery Agent Registration</h1>

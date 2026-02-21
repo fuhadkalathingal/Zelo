@@ -71,7 +71,7 @@ export default function ProfilePage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-32">
-            <div className="bg-white p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm border-b border-gray-100">
+            <div className="bg-white p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm border-b border-gray-200">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
                         <ChevronLeft className="w-6 h-6 text-gray-700" />
@@ -91,7 +91,7 @@ export default function ProfilePage() {
 
             <div className="max-w-2xl mx-auto p-4 space-y-6 mt-4">
                 {/* Profile Header Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center relative overflow-hidden">
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 flex flex-col items-center text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
 
                     <div className="relative mt-8 mb-4">
@@ -109,13 +109,13 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Details Form Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-5">
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 space-y-5">
                     <h3 className="font-extrabold text-gray-900 flex items-center gap-2 mb-2 border-b border-gray-50 pb-4">
                         <User className="w-5 h-5 text-emerald-500" /> Personal Details
                     </h3>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
+                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
                         <input
                             type="text"
                             disabled={!isEditing}
@@ -126,7 +126,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
+                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
                         <div className="relative">
                             <input
                                 type="email"
@@ -135,12 +135,12 @@ export default function ProfilePage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all font-bold text-gray-900 disabled:opacity-70 disabled:bg-gray-50/50"
                             />
-                            <Mail className="absolute left-4 top-3.5 w-4 h-4 text-gray-400" />
+                            <Mail className="absolute left-4 top-3.5 w-4 h-4 text-gray-500" />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-extrabold text-gray-500 uppercase tracking-widest mb-1.5 ml-1">Mobile Number</label>
+                        <label className="block text-[10px] font-extrabold text-gray-600 uppercase tracking-widest mb-1.5 ml-1">Mobile Number</label>
                         <div className="relative">
                             <input
                                 type="tel"
@@ -149,13 +149,13 @@ export default function ProfilePage() {
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full bg-gray-50 border border-gray-200 pl-11 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all font-bold text-gray-900 disabled:opacity-70 disabled:bg-gray-50/50"
                             />
-                            <Phone className="absolute left-4 top-3.5 w-4 h-4 text-gray-400" />
+                            <Phone className="absolute left-4 top-3.5 w-4 h-4 text-gray-500" />
                         </div>
                     </div>
                 </div>
 
                 {/* Addresses Card */}
-                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200">
                     <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-4">
                         <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-emerald-500" /> Saved Addresses
@@ -224,7 +224,7 @@ export default function ProfilePage() {
                                     <div className="flex justify-between items-start mb-3">
                                         <div>
                                             <p className="font-extrabold text-sm text-gray-900">{order.orderId}</p>
-                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                            <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-0.5">{new Date(order.createdAt).toLocaleDateString()}</p>
                                         </div>
                                         <span className="bg-orange-100 text-orange-800 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">
                                             {order.status}

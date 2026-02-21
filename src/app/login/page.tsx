@@ -148,7 +148,7 @@ function LoginContent() {
 
     return (
         <div className="min-h-[calc(100vh-80px)] bg-gray-50 flex flex-col">
-            <div className="bg-white p-4 flex items-center gap-4 sticky top-0 z-10 shadow-sm border-b border-gray-100 md:hidden">
+            <div className="bg-white p-4 flex items-center gap-4 sticky top-0 z-10 shadow-sm border-b border-gray-200 md:hidden">
                 <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors">
                     <ChevronLeft className="w-6 h-6 text-gray-700" />
                 </button>
@@ -161,10 +161,10 @@ function LoginContent() {
                         <Image src="/zelo.png" alt="Zelo" fill className="object-cover" />
                     </div>
                     <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome to Zelo</h2>
-                    <p className="text-gray-500 text-sm font-medium">Batched delivery for the community</p>
+                    <p className="text-gray-600 text-sm font-medium">Batched delivery for the community</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     {step === 'LOGIN' ? (
                         <div className="space-y-6">
                             <button
@@ -235,7 +235,7 @@ function LoginContent() {
                     )}
                 </div>
 
-                <p className="text-center text-xs text-gray-400 mt-8 leading-relaxed">
+                <p className="text-center text-xs text-gray-500 mt-8 leading-relaxed">
                     By continuing, you agree to our <br />
                     <a href="#" className="underline">Terms of Service</a> & <a href="#" className="underline">Privacy Policy</a>
                 </p>

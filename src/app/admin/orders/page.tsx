@@ -27,7 +27,10 @@ export default function AdminOrdersPage() {
     const activeAgents = agents.filter((a) => a.isActive);
 
     const unassignedOrders = useMemo(
-        () => orders.filter((o) => o.batchType === activeBatch && !o.assignedAgentId && o.status !== 'Delivered'),
+        () => orders.filter((o) => {
+            const matchesBatch = o.batchType === activeBatch || (!o.batchType && activeBatch === 'Morning');
+            return matchesBatch && !o.assignedAgentId && o.status !== 'Delivered';
+        }),
         [orders, activeBatch],
     );
 

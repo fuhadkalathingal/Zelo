@@ -221,14 +221,14 @@ export default function AdminAgentsPage() {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: idx * 0.1 }}
                             key={agent.agentId}
-                            className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col gap-4 relative overflow-hidden group"
+                            className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 flex flex-col gap-4 relative overflow-hidden group"
                         >
                             {/* Status Bar */}
                             <div className={`absolute top-0 left-0 w-full h-1.5 ${agent.isActive ? 'bg-emerald-500' : 'bg-gray-300'}`}></div>
 
                             <div className="flex justify-between items-start">
                                 <div className="flex gap-4">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-sm ${agent.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-700 border border-gray-100'}`}>
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-sm ${agent.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-gray-50 text-gray-700 border border-gray-200'}`}>
                                         {agent.name.charAt(0)}
                                     </div>
                                     <div>
@@ -236,13 +236,13 @@ export default function AdminAgentsPage() {
                                         <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest truncate max-w-[120px]" title={agent.uid}>{agent.uid}</p>
                                     </div>
                                 </div>
-                                <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-100">
+                                <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">
                                     <button onClick={() => openEditModal(agent)} className="p-1.5 text-blue-500 hover:bg-blue-100 rounded-md transition-colors"><Edit2 className="w-4 h-4" /></button>
                                     <button onClick={() => handleDelete(agent.agentId, agent.name)} className="p-1.5 text-red-500 hover:bg-red-100 rounded-md transition-colors"><Trash2 className="w-4 h-4" /></button>
                                 </div>
                             </div>
 
-                            <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-2 gap-4 mt-2 border border-gray-100">
+                            <div className="bg-gray-50 rounded-xl p-4 grid grid-cols-2 gap-4 mt-2 border border-gray-200">
                                 <div>
                                     <p className="text-[10px] uppercase font-extrabold text-gray-800 tracking-widest mb-1">Vehicle No</p>
                                     <p className="font-bold text-sm text-gray-800">{agent.vehicleNo}</p>
@@ -284,7 +284,7 @@ export default function AdminAgentsPage() {
                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" />
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-3xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden">
-                            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+                            <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50/50">
                                 <h3 className="text-xl font-black text-gray-900">
                                     {editingAgent ? 'Edit Agent Profile' : 'Onboard New Agent'}
                                 </h3>
