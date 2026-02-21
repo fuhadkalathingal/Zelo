@@ -81,7 +81,7 @@ export default function HomePage() {
 
               {/* Image Space */}
               <Link href={`/product/${prod.id}`} className="w-full aspect-square bg-[#FAFAFA] rounded-2xl flex items-center justify-center text-7xl mb-4 overflow-hidden relative group-hover:bg-[#F3F4F6] transition-colors border border-gray-50 cursor-pointer">
-                <ProductImage imageUrl={prod.imageUrl} alt={prod.name} className="w-full h-full object-contain p-3" emojiClassName="drop-shadow-lg scale-110 group-hover:scale-125 transition-transform duration-300" />
+                <ProductImage imageUrl={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" emojiClassName="drop-shadow-lg scale-110 group-hover:scale-125 transition-transform duration-300" />
               </Link>
 
               {/* Delivery Meta */}
