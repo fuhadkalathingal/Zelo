@@ -1,27 +1,66 @@
 "use client";
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Package, MapPin, Truck, ChevronLeft, PhoneCall, KeyRound } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useOrderStore } from '@/store/useOrderStore';
 import { useAgentStore } from '@/store/useAgentStore';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Order } from '@/types';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function OrderTrackingPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const { id } = use(params);
     const { user } = useAuthStore();
 
-    // Fetch live order and agent data
-    const currentOrder = useOrderStore(s => s.orders.find(o => o.orderId === id));
+    const liveOrder = useOrderStore(s => s.orders.find(o => o.orderId === id));
+    const [fallbackOrder, setFallbackOrder] = useState<Order | null>(null);
+    const [isCheckingOrder, setIsCheckingOrder] = useState(true);
+
+    useEffect(() => {
+        let cancelled = false;
+        const loadOrder = async () => {
+            if (liveOrder) {
+                setIsCheckingOrder(false);
+                return;
+            }
+            try {
+                const snap = await getDoc(doc(db, 'orders', id));
+                if (!cancelled) {
+                    setFallbackOrder(snap.exists() ? ({ ...snap.data(), orderId: snap.id } as Order) : null);
+                }
+            } finally {
+                if (!cancelled) setIsCheckingOrder(false);
+            }
+        };
+        loadOrder();
+        return () => {
+            cancelled = true;
+        };
+    }, [id, liveOrder]);
+
+    const currentOrder = liveOrder || fallbackOrder;
     const assignedAgent = useAgentStore(s => s.agents.find(a => a.agentId === currentOrder?.assignedAgentId));
 
-    if (!user || !currentOrder) {
+    if (!user || isCheckingOrder) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4">
                 <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-500 rounded-full animate-spin"></div>
-                <p className="font-bold text-gray-500">Locating your order live...</p>
+                <p className="font-bold text-gray-600">Locating your order live...</p>
+            </div>
+        );
+    }
+
+    if (!currentOrder) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4 px-6 text-center">
+                <h1 className="text-xl font-black text-gray-900">Order not found</h1>
+                <p className="font-semibold text-gray-600">We couldn&apos;t find this order. It may take a moment to appear after checkout.</p>
+                <button onClick={() => router.push('/orders')} className="px-5 py-3 rounded-xl bg-emerald-600 text-white font-bold">Go to Orders</button>
             </div>
         );
     }
@@ -46,7 +85,6 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
-            {/* Header */}
             <div className={`p-4 pt-6 md:p-6 sticky top-0 z-10 shadow-sm text-white rounded-b-3xl transition-colors duration-500 ${currentOrder.status === 'Delivered' ? 'bg-emerald-600' : 'bg-emerald-500'}`}>
                 <div className="flex items-center gap-4 mb-4">
                     <button onClick={() => router.push('/')} className="p-2 -ml-2 hover:bg-white/20 rounded-full transition-colors bg-black/10">
@@ -76,77 +114,36 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
             </div>
 
             <main className="max-w-2xl mx-auto p-4 space-y-6 mt-6">
-
                 {currentOrder.status === 'Out for Delivery' && currentOrder.deliveryPin && (
-                    <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="bg-indigo-600 rounded-3xl p-6 shadow-xl text-white text-center relative overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-xl -ml-10 -mb-10"></div>
-
+                    <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-indigo-600 rounded-3xl p-6 shadow-xl text-white text-center relative overflow-hidden">
                         <KeyRound className="w-8 h-8 text-indigo-200 mx-auto mb-3" />
                         <h3 className="font-extrabold text-sm uppercase tracking-widest text-indigo-100 mb-2">Delivery Secure PIN</h3>
                         <div className="font-black text-5xl tracking-[0.25em] pl-[0.25em]">{currentOrder.deliveryPin}</div>
-                        <p className="text-xs font-bold text-indigo-200 mt-4 leading-relaxed max-w-xs mx-auto">Please tell this 4-digit code to your delivery agent upon arrival to securely receive your groceries.</p>
                     </motion.div>
                 )}
 
-                {/* Live Delivery Agent */}
                 {assignedAgent && (
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
-                        className="bg-white border border-gray-100 shadow-sm rounded-3xl p-5 flex items-center gap-4"
-                    >
-                        <div className="w-14 h-14 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-center justify-center text-2xl font-black text-emerald-600">
-                            {assignedAgent.name.charAt(0)}
-                        </div>
-                        <div className="flex-1">
+                    <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="bg-white rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
+                        <div>
                             <p className="font-extrabold text-sm text-gray-900">{assignedAgent.name}</p>
                             <p className="text-[10px] font-bold tracking-widest uppercase text-gray-500">Zelo Delivery Partner</p>
                             <p className="text-xs font-bold text-emerald-600 mt-1 uppercase tracking-wider">{assignedAgent.vehicleNo}</p>
                         </div>
-                        <a href={`tel:${assignedAgent.phone}`} className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-100 hover:scale-105 transition-all">
+                        <a href={`tel:${assignedAgent.phone}`} className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                             <PhoneCall className="w-4 h-4" />
                         </a>
                     </motion.div>
                 )}
 
-                {/* Amazon/Flipkart Style Timeline */}
                 <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-200">
-                    <div className="mb-8">
-                        <h3 className="font-extrabold text-gray-900 text-xl tracking-tight">
-                            {currentOrder.status === 'Delivered' ? 'Delivered successfully' : `Arriving ${currentOrder.batchType === 'Morning' ? '12:45 PM' : '6:45 PM'}`}
-                        </h3>
-                        {currentOrder.status !== 'Delivered' && (
-                            <p className="text-sm font-semibold text-gray-600 mt-1">Your items are on the way to {currentOrder.deliveryAddress.area}</p>
-                        )}
-                    </div>
-
                     <div className="relative pl-4 space-y-8">
-                        {/* Thick Background Line */}
                         <div className="absolute left-[31px] top-4 bottom-8 w-1 bg-gray-200 rounded-full z-0"></div>
-                        {/* Dynamic Progress Line */}
-                        <motion.div
-                            initial={{ height: 0 }}
-                            animate={{ height: `${(currentStatusIndex / 3) * 100}%` }}
-                            transition={{ duration: 1.2, ease: "easeOut" }}
-                            className="absolute left-[31px] top-4 w-1 bg-emerald-500 rounded-full z-0"
-                        ></motion.div>
-
+                        <motion.div initial={{ height: 0 }} animate={{ height: `${(currentStatusIndex / 3) * 100}%` }} transition={{ duration: 1.2, ease: "easeOut" }} className="absolute left-[31px] top-4 w-1 bg-emerald-500 rounded-full z-0"></motion.div>
                         {STEPS.map((step, idx) => {
                             const isCompleted = step.status === 'Completed';
                             const isActive = idx === currentStatusIndex;
-
                             return (
-                                <motion.div
-                                    key={step.id}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.15 }}
-                                    className="flex items-start gap-5 relative z-10"
-                                >
+                                <motion.div key={step.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.15 }} className="flex items-start gap-5 relative z-10">
                                     <div className={`w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center border-4 border-white ${isCompleted ? 'bg-emerald-500 text-white' : isActive ? 'bg-emerald-500 text-white shadow-[0_0_0_4px_rgba(16,185,129,0.2)]' : 'bg-gray-300 text-transparent'}`}>
                                         {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-2.5 h-2.5 bg-white rounded-full" />}
                                     </div>
@@ -160,16 +157,15 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
 
-                {/* Order Summary */}
                 <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">
-                        Items Ordered ({currentOrder.items.length})
-                    </h3>
+                    <h3 className="font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Items Ordered ({currentOrder.items.length})</h3>
                     <div className="space-y-3">
                         {currentOrder.items.map(item => (
                             <div key={item.productId} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-2xl w-8 h-8 flex items-center justify-center">{item.imageUrl}</span>
+                                    <div className="w-8 h-8 rounded-md overflow-hidden flex items-center justify-center bg-white border border-gray-100">
+                                        <ProductImage imageUrl={item.imageUrl} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-lg" />
+                                    </div>
                                     <div>
                                         <p className="font-bold text-xs text-gray-900">{item.name}</p>
                                         <p className="text-[10px] text-gray-500 font-semibold">{item.unit} x {item.qty}</p>
@@ -180,18 +176,12 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
                         ))}
                     </div>
                 </div>
-
-                <div className="text-center pt-4">
-                    <button onClick={() => router.push('/')} className="text-emerald-600 font-extrabold text-sm uppercase tracking-widest hover:underline">
-                        Continue Shopping
-                    </button>
-                </div>
             </main>
         </div>
     );
 }
 
-function ClockIcon(props: any) {
+function ClockIcon(props: React.ComponentProps<'svg'>) {
     return (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />

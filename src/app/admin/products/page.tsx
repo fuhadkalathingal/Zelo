@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useProductStore } from '@/store/useProductStore';
-import { Plus, Edit2, Trash2, Search, Filter, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/types';
 import { CATEGORIES } from '@/lib/data';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function AdminProductsPage() {
     const { products, addProduct, updateProduct, deleteProduct, loading } = useProductStore();
@@ -39,23 +40,42 @@ export default function AdminProductsPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Please upload an image smaller than 5MB.');
+            return;
+        }
+
         setIsUploading(true);
         try {
             const fileRef = ref(storage, `products/${Date.now()}_${file.name}`);
 
             // Add a timeout because Firebase Storage can silently hang if CORS/rules block it
             const uploadPromise = uploadBytes(fileRef, file);
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000));
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000));
 
             await Promise.race([uploadPromise, timeoutPromise]);
 
             const url = await getDownloadURL(fileRef);
             setFormData(prev => ({ ...prev, imageUrl: url }));
-        } catch (error: any) {
+        } catch (error) {
             console.error("Image upload failed or timed out:", error);
-            const fallbackUrl = prompt("Storage Upload unavailable (check Firebase rules). You can paste a direct Web Image URL below to continue:");
-            if (fallbackUrl) {
-                setFormData(prev => ({ ...prev, imageUrl: fallbackUrl }));
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (typeof reader.result === 'string') {
+                    const dataUrl = reader.result;
+                    setFormData(prev => ({ ...prev, imageUrl: dataUrl }));
+                }
+            };
+            reader.readAsDataURL(file);
+
+            const fallbackUrl = prompt("Storage upload failed. You can still continue using local preview or paste a direct image URL:");
+            if (fallbackUrl?.trim()) {
+                setFormData(prev => ({ ...prev, imageUrl: fallbackUrl.trim() }));
             }
         } finally {
             setIsUploading(false);
@@ -171,7 +191,14 @@ export default function AdminProductsPage() {
                                     >
                                         <td className="p-4">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 shrink-0 bg-gray-50 rounded-xl flex items-center justify-center text-2xl border border-gray-100 shadow-sm">{prod.imageUrl}</div>
+                                                <div className="w-12 h-12 shrink-0 bg-gray-50 rounded-xl flex items-center justify-center text-2xl border border-gray-100 shadow-sm overflow-hidden">
+                                                    <ProductImage
+                                                        imageUrl={prod.imageUrl}
+                                                        alt={prod.name}
+                                                        className="w-full h-full object-cover"
+                                                        emojiClassName="text-2xl"
+                                                    />
+                                                </div>
                                                 <div>
                                                     <div className="font-extrabold text-sm text-gray-900">{prod.name}</div>
                                                     <div className="text-[10px] font-bold text-gray-500 mt-0.5">{prod.unit}</div>
@@ -213,7 +240,7 @@ export default function AdminProductsPage() {
                     )}
                     {!loading && filteredProducts.length === 0 && (
                         <div className="text-center py-12">
-                            <p className="font-bold text-gray-500">No products found matching "{searchTerm}"</p>
+                            <p className="font-bold text-gray-500">No products found matching &quot;{searchTerm}&quot;</p>
                         </div>
                     )}
                 </div>
@@ -258,13 +285,12 @@ export default function AdminProductsPage() {
                                         <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Product Image *</label>
                                         <div className="flex items-center gap-4">
                                             <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 flex flex-shrink-0 items-center justify-center overflow-hidden">
-                                                {formData.imageUrl && formData.imageUrl.startsWith('http') ? (
-                                                    <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                                                ) : formData.imageUrl ? (
-                                                    <span className="text-3xl">{formData.imageUrl}</span>
-                                                ) : (
-                                                    <span className="text-sm text-gray-400 font-bold">Upload</span>
-                                                )}
+                                                <ProductImage
+                                                    imageUrl={formData.imageUrl}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                    emojiClassName="text-3xl"
+                                                />
                                             </div>
                                             <div className="flex-1">
                                                 <input

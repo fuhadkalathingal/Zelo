@@ -4,9 +4,10 @@ import { use, useState } from 'react';
 import { useProductStore } from '@/store/useProductStore';
 import { notFound, useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/useCartStore';
-import { ChevronLeft, Share2, ShieldCheck, Tag, Info, ChevronRight, Plus, Minus, ArrowRight, Search } from 'lucide-react';
+import { ChevronLeft, Share2, Tag, Info, ChevronRight, Plus, Minus, ArrowRight, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
@@ -67,9 +68,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         initial={{ y: 20, scale: 0.9, opacity: 0 }}
                         animate={{ y: 0, scale: 1, opacity: 1 }}
                         transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                        className="text-[180px] md:text-[250px] drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-[260px] md:h-[340px] flex items-center justify-center"
                     >
-                        {product.imageUrl}
+                        <ProductImage imageUrl={product.imageUrl} alt={product.name} className="w-full h-full object-contain" emojiClassName="text-[180px] md:text-[250px] drop-shadow-2xl group-hover:scale-110 transition-transform duration-500" />
                     </motion.div>
                 </div>
 
