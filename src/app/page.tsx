@@ -201,7 +201,8 @@ export default function HomePage() {
             {renderProducts(products.filter(p =>
               p.category === activeCategory ||
               (activeCategory === 'Dairy, Bread & Eggs' && p.category.includes('Dairy')) ||
-              (activeCategory === 'Atta, Rice, Oil & Dals' && p.category.includes('Atta'))
+              (activeCategory === 'Atta, Rice, Oil & Dals' && p.category.includes('Atta')) ||
+              (activeCategory === 'Vegetables & Fruits' && (p.category.includes('Vegetable') || p.category.includes('Fruit')))
             ))}
           </div>
         ) : (

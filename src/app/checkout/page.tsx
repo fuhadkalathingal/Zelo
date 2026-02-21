@@ -18,6 +18,7 @@ export default function CheckoutPage() {
 
 
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isEditingAddress, setIsEditingAddress] = useState(false);
     const [batchInfo, setBatchInfo] = useState<{ title: string; time: string; batchType: 'Morning' | 'Evening' }>({
         title: 'Lunch Batch',
         time: 'Today, 12:45 PM',
@@ -104,6 +105,28 @@ export default function CheckoutPage() {
                 alert('Please enable location services to auto-detect.');
             }
         );
+    };
+
+    const handleSaveAddress = async () => {
+        if (!user) return;
+        if (!area || !flat || !pincode) return alert('Please fill in Flat/Building, Area, and Pincode fields.');
+
+        const userDocRef = doc(db, 'users', user.uid);
+        const updatedAddress = {
+            id: 'addr-1',
+            type: 'Home' as const,
+            flat,
+            area,
+            landmark,
+            pincode,
+            latitude,
+            longitude
+        };
+        const updatedProfile = { ...user, savedAddresses: [updatedAddress] };
+
+        await setDoc(userDocRef, updatedProfile);
+        setUser(updatedProfile);
+        setIsEditingAddress(false);
     };
 
     const handleConfirmOrder = async () => {
@@ -212,18 +235,33 @@ export default function CheckoutPage() {
                             <button onClick={handleAutoDetectLocation} disabled={addressLoading} className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-widest hover:underline disabled:opacity-50">
                                 {addressLoading ? 'Detecting...' : 'Auto Detect'}
                             </button>
+                            {user?.savedAddresses?.[0] && !isEditingAddress && (
+                                <button onClick={() => setIsEditingAddress(true)} className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest hover:underline">
+                                    Edit Address
+                                </button>
+                            )}
                         </div>
                     </div>
 
-                    {user?.savedAddresses?.[0] ? (
+                    {!user?.savedAddresses?.[0] || isEditingAddress ? (
+                        <div className="space-y-3">
+                            <input value={flat} onChange={(e) => setFlat(e.target.value)} placeholder="House/Flat No. & Building Name *" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold outline-none focus:border-emerald-500" />
+                            <input value={area} onChange={(e) => setArea(e.target.value)} placeholder="Area & Street *" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold outline-none focus:border-emerald-500" />
+                            <div className="flex gap-3">
+                                <input value={landmark} onChange={(e) => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold outline-none focus:border-emerald-500" />
+                                <input value={pincode} onChange={(e) => setPincode(e.target.value)} placeholder="Pincode *" className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm font-semibold outline-none focus:border-emerald-500" />
+                            </div>
+                            <button onClick={handleSaveAddress} className="w-full bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl hover:bg-emerald-200 transition-colors mt-2">
+                                Save Address securely
+                            </button>
+                        </div>
+                    ) : (
                         <p className="text-sm font-semibold text-gray-900 p-4 border border-gray-200 rounded-xl bg-gray-50/50 leading-relaxed shadow-inner">
                             {user.savedAddresses[0].flat ? `${user.savedAddresses[0].flat}, ` : ''}{user.savedAddresses[0].area}
                             <br />
+                            <span className="text-gray-600 text-xs">Landmark: {user.savedAddresses[0].landmark || 'N/A'}, Pincode: {user.savedAddresses[0].pincode}</span>
+                            <br />
                             Contact: <span className="font-bold text-gray-900">{user.phone}</span>
-                        </p>
-                    ) : (
-                        <p className="text-sm font-medium text-orange-600 p-4 border border-orange-100 rounded-xl bg-orange-50 mb-2">
-                            Please verify your location to proceed.
                         </p>
                     )}
                 </div>
