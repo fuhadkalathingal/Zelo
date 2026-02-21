@@ -155,10 +155,14 @@ export default function CheckoutPage() {
             });
 
             setUser({ ...user, orders: [...userOrders, newOrder] });
-            clearCart();
 
-            // Push to Tracking Page
+            // Push to Tracking Page first
             router.push(`/order/${orderRef.id}`);
+
+            // Clear cart slightly after so the UI doesn't flash the empty state while routing
+            setTimeout(() => {
+                clearCart();
+            }, 500);
 
         } catch (error) {
             console.error("Order failed", error);
@@ -284,19 +288,15 @@ export default function CheckoutPage() {
                 </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center">
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-20 flex justify-center pb-6">
                 <div className="max-w-3xl w-full flex gap-4 items-center">
-                    <div className="flex flex-col border border-emerald-100 bg-emerald-50 rounded-xl px-4 py-2 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-1"><ShieldCheck className="w-8 h-8 opacity-10 text-emerald-800" /></div>
-                        <span className="text-[10px] text-emerald-700 font-extrabold tracking-widest uppercase">To Pay</span>
-                        <span className="text-xl font-black text-emerald-900 text-left">₹{total.toFixed(2)}</span>
-                    </div>
                     <button
                         onClick={handleConfirmOrder}
                         disabled={isProcessing || !user?.savedAddresses?.[0]}
-                        className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 disabled:border-b-0 text-white font-black tracking-widest uppercase text-sm py-4 rounded-xl shadow-md border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
+                        className="flex-1 bg-gray-900 hover:bg-black disabled:bg-gray-300 disabled:text-gray-500 text-white font-black tracking-widest uppercase text-sm py-5 rounded-2xl shadow-xl active:scale-[0.98] transition-all flex items-center justify-between px-8"
                     >
-                        {isProcessing ? 'Processing Payment...' : 'Swipe to Pay'} <ArrowRight className="w-5 h-5" />
+                        <span>{isProcessing ? 'Processing Payment...' : (paymentMethod === 'COD' ? 'Place Order' : 'Pay Securely')}</span>
+                        {!isProcessing && <span className="text-emerald-400">₹{total.toFixed(2)}</span>}
                     </button>
                 </div>
             </div>

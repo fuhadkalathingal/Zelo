@@ -208,29 +208,29 @@ export default function AdminProductsPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="col-span-2">
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Product Name *</label>
-                                        <input required type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
+                                        <input required type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Category *</label>
-                                        <select required value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all">
+                                        <select required value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all">
                                             {CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
                                         </select>
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Price (₹) *</label>
-                                        <input required type="number" min="0" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
+                                        <input required type="number" min="0" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Discount Price (₹)</label>
-                                        <input type="number" min="0" value={formData.discountPrice} onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" placeholder="Optional" />
+                                        <input type="number" min="0" value={formData.discountPrice} onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" placeholder="Optional" />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Icon/Emoji *</label>
-                                        <input required type="text" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
+                                        <input required type="text" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Unit *</label>
-                                        <input required type="text" placeholder="e.g. 1 kg, 500g" value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
+                                        <input required type="text" placeholder="e.g. 1 kg, 500g" value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} className="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-900 outline-none focus:border-emerald-500 focus:bg-white transition-all transition-all" />
                                     </div>
                                     <div className="col-span-2 pt-2">
                                         <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl border border-gray-200">

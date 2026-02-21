@@ -5,10 +5,22 @@ import { useAgentStore } from '@/store/useAgentStore';
 import { AgentProfile } from '@/types';
 import { Plus, Search, Star, MoreVertical, X, Trash2, Edit2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useEffect } from 'react';
 
 export default function AdminAgentsPage() {
     const { agents, addAgent, updateAgent, deleteAgent, loading } = useAgentStore();
     const [searchTerm, setSearchTerm] = useState('');
+    const [validAgentUids, setValidAgentUids] = useState<string[]>([]);
+
+    useEffect(() => {
+        const q = query(collection(db, 'users'), where('role', '==', 'agent'));
+        const unsub = onSnapshot(q, (snapshot) => {
+            setValidAgentUids(snapshot.docs.map(d => d.id));
+        });
+        return () => unsub();
+    }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAgent, setEditingAgent] = useState<AgentProfile | null>(null);
@@ -23,11 +35,13 @@ export default function AdminAgentsPage() {
         payoutPerDelivery: 50
     });
 
-    const filteredAgents = agents.filter(a =>
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.agentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.uid.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredAgents = agents.filter(a => {
+        const hasRole = validAgentUids.includes(a.uid);
+        const matchesSearch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            a.agentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            a.uid.toLowerCase().includes(searchTerm.toLowerCase());
+        return hasRole && matchesSearch;
+    });
 
     const openAddModal = () => {
         setEditingAgent(null);

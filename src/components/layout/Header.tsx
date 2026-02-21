@@ -48,7 +48,9 @@ export default function Header() {
                             <MapPinned className="w-5 h-5 text-emerald-600" />
                             <div className="flex flex-col">
                                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 leading-none">LUNCH BATCH</span>
-                                <span className="text-sm font-semibold text-gray-700 truncate max-w-[150px]">Select Location</span>
+                                <span className="text-sm font-semibold text-gray-700 truncate max-w-[150px]">
+                                    {user?.savedAddresses?.[0]?.area || 'Select Location'}
+                                </span>
                             </div>
                         </div>
                     </div>
