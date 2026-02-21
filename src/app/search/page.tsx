@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import ProductImage from '@/components/ui/ProductImage';
 import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
 
@@ -65,8 +66,8 @@ export default function SearchPage() {
                                 const qty = items.find(i => i.id === product.id)?.quantity || 0;
                                 return (
                                     <Link href={`/product/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
-                                        <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-pointer">
-                                            {product.imageUrl}
+                                        <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-pointer overflow-hidden p-2">
+                                            <ProductImage imageUrl={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                         </div>
                                         <div>
                                             <p className="font-extrabold text-sm text-gray-900 line-clamp-2 leading-tight">{product.name}</p>

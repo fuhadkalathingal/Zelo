@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useOrderStore } from '@/store/useOrderStore';
 import { useRouter } from 'next/navigation';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function OrdersPage() {
     const user = useAuthStore((state) => state.user);
@@ -53,8 +54,8 @@ export default function OrdersPage() {
                                     <div className="flex gap-4 items-center">
                                         <div className="flex -space-x-3">
                                             {order.items.slice(0, 4).map((item, idx) => (
-                                                <div key={idx} className="w-10 h-10 rounded-full bg-white border-2 border-gray-50 flex items-center justify-center text-lg shadow-sm z-10">
-                                                    {item.imageUrl || '📦'}
+                                                <div key={idx} className="w-10 h-10 rounded-full bg-white border-2 border-gray-50 flex items-center justify-center text-lg shadow-sm z-10 overflow-hidden relative">
+                                                    <ProductImage imageUrl={item.imageUrl || '📦'} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-lg absolute inset-0 flex items-center justify-center" />
                                                 </div>
                                             ))}
                                             {order.items.length > 4 && (
@@ -76,8 +77,8 @@ export default function OrdersPage() {
                                         <button
                                             onClick={() => router.push(`/order/${order.orderId}`)}
                                             className={`text-xs font-black px-5 py-2.5 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 w-max ${isDelivered
-                                                    ? 'bg-gray-50 text-emerald-600 hover:bg-emerald-50 border border-gray-200'
-                                                    : 'bg-emerald-500 text-white hover:bg-emerald-600 border border-emerald-600'
+                                                ? 'bg-gray-50 text-emerald-600 hover:bg-emerald-50 border border-gray-200'
+                                                : 'bg-emerald-500 text-white hover:bg-emerald-600 border border-emerald-600'
                                                 }`}
                                         >
                                             {isDelivered ? 'Order Receipt' : 'Track Order'}
