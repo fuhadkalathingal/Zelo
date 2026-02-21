@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, collection } from 'firebase/firestore';
 import { BatchType, OrderStatus } from '@/types';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function CheckoutPage() {
     const router = useRouter();
@@ -136,7 +137,7 @@ export default function CheckoutPage() {
                 })),
                 totalAmount: total,
                 status: assignedAgent ? 'Batch Processing' : 'Placed' as OrderStatus,
-                batchType: batchInfo.title as BatchType,
+                batchType: batchInfo.batchType as BatchType,
                 paymentMethod: paymentMethod,
                 deliveryAddress: user.savedAddresses[0],
                 assignedAgentId: assignedAgent,
@@ -276,7 +277,9 @@ export default function CheckoutPage() {
                         {items.map(item => (
                             <div key={item.id} className="flex justify-between items-center bg-gray-50/50 p-2 rounded-lg border border-gray-100/50">
                                 <div className="flex items-center gap-3">
-                                    <div className="bg-white border border-gray-100 w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm">{item.imageUrl}</div>
+                                    <div className="bg-white border border-gray-100 w-10 h-10 rounded-lg flex items-center justify-center text-xl shadow-sm overflow-hidden">
+                                        <ProductImage imageUrl={item.imageUrl} alt={item.name || 'Product'} className="w-full h-full object-cover" emojiClassName="text-lg" />
+                                    </div>
                                     <div>
                                         <p className="font-bold text-sm text-gray-900">{item.name}</p>
                                         <p className="text-xs font-semibold text-gray-700">{item.unit} x {item.quantity}</p>

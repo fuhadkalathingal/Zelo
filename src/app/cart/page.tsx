@@ -4,11 +4,11 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { ChevronLeft, MapPin, X, Plus, Minus, ArrowRight, Receipt, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import ProductImage from '@/components/ui/ProductImage';
 
 export default function CartPage() {
     const router = useRouter();
-    const { items, updateQuantity, removeItem, getCartTotal, getItemCount } = useCartStore();
+    const { items, updateQuantity, getCartTotal, getItemCount } = useCartStore();
     const { user } = useAuthStore();
     const total = getCartTotal();
     const count = getItemCount();
@@ -56,7 +56,7 @@ export default function CartPage() {
                         <div className="absolute overflow-hidden w-full h-full rounded-full opacity-50 bg-gradient-to-tr from-transparent via-emerald-100 to-transparent mix-blend-overlay"></div>
                     </div>
                     <h2 className="text-xl font-extrabold text-gray-900 mb-2">Your cart is empty</h2>
-                    <p className="text-gray-500 mb-8 max-w-[250px]">Looks like you haven't added anything to your cart yet.</p>
+                    <p className="text-gray-500 mb-8 max-w-[250px]">Looks like you haven&apos;t added anything to your cart yet.</p>
                     <button onClick={() => router.push('/')} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-sm transition-all active:scale-[0.98]">
                         Start Shopping
                     </button>
@@ -102,7 +102,7 @@ export default function CartPage() {
                             {items.map((item) => (
                                 <div key={item.id} className="p-4 flex items-center gap-4">
                                     <div className="w-16 h-16 bg-gray-50 rounded-xl shrink-0 p-1 flex items-center justify-center flex-col relative overflow-hidden border border-gray-100">
-                                        <span className="text-3xl z-10 block leading-none select-none">{item.imageUrl}</span>
+                                        <ProductImage imageUrl={item.imageUrl} alt={item.name} className="w-full h-full object-cover" emojiClassName="text-3xl z-10 block leading-none select-none" />
                                         <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-gray-200/50 to-transparent"></div>
                                     </div>
 
