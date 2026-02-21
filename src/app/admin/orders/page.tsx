@@ -3,28 +3,37 @@
 import { useMemo, useState } from 'react';
 import { AgentProfile } from '@/types';
 import { useOrderStore } from '@/store/useOrderStore';
-
-const AGENTS: AgentProfile[] = [
-    { agentId: 'ag1', uid: 'user1', name: 'Ravi Kumar', phone: '9876543210', vehicleNo: 'KA-01-AB-1234', isActive: true },
-    { agentId: 'ag2', uid: 'user2', name: 'Suresh Das', phone: '9876543211', vehicleNo: 'KA-02-CD-5678', isActive: true },
-];
+import { useAgentStore } from '@/store/useAgentStore';
 
 export default function AdminOrdersPage() {
     const [activeBatch, setActiveBatch] = useState<'Morning' | 'Evening'>('Morning');
     const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+    const [isAssigning, setIsAssigning] = useState(false);
 
     const orders = useOrderStore((state) => state.orders);
-    const assignOrdersToAgent = useOrderStore((state) => state.assignOrdersToAgent);
+    const updateOrderStatus = useOrderStore((state) => state.updateOrderStatus);
+    const agents = useAgentStore((state) => state.agents).filter(a => a.isActive);
 
     const unassignedOrders = useMemo(
         () => orders.filter((o) => o.batchType === activeBatch && !o.assignedAgentId && o.status !== 'Delivered'),
         [orders, activeBatch],
     );
 
-    const handleAssign = (agentId: string) => {
+    const handleAssign = async (agentId: string) => {
         if (selectedOrders.length === 0) return;
-        assignOrdersToAgent(selectedOrders, agentId);
-        setSelectedOrders([]);
+        setIsAssigning(true);
+        try {
+            const promises = selectedOrders.map(orderId =>
+                updateOrderStatus(orderId, 'Batch Processing', { assignedAgentId: agentId })
+            );
+            await Promise.all(promises);
+            setSelectedOrders([]);
+        } catch (error) {
+            console.error("Failed assigning orders", error);
+            alert("Error assigning orders.");
+        } finally {
+            setIsAssigning(false);
+        }
     };
 
     return (
@@ -64,14 +73,16 @@ export default function AdminOrdersPage() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="bg-gray-50 p-4 border-b text-sm font-semibold text-gray-500 uppercase tracking-wider">Agents</div>
                     <div className="p-2 space-y-2">
-                        {AGENTS.map((agent) => (
+                        {agents.length === 0 ? (
+                            <p className="text-gray-500 text-sm font-bold p-2">No active agents online.</p>
+                        ) : agents.map((agent) => (
                             <div key={agent.agentId} className="p-3 rounded-lg border border-emerald-200 bg-emerald-50 flex justify-between items-center">
                                 <div>
                                     <div className="font-bold text-gray-800 text-sm">{agent.name}</div>
                                     <div className="text-xs text-gray-500">{agent.vehicleNo}</div>
                                 </div>
-                                <button onClick={() => handleAssign(agent.agentId)} disabled={selectedOrders.length === 0} className="text-white bg-emerald-600 disabled:bg-emerald-300 px-3 py-1 rounded text-sm font-medium">
-                                    Assign
+                                <button onClick={() => handleAssign(agent.agentId)} disabled={selectedOrders.length === 0 || isAssigning} className="text-white bg-emerald-600 disabled:bg-emerald-300 px-3 py-1 rounded text-sm font-medium transition-all">
+                                    {isAssigning ? '...' : 'Assign'}
                                 </button>
                             </div>
                         ))}

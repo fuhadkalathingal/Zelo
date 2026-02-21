@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState } from 'react';
-import { getProductById } from '@/lib/data';
+import { useProductStore } from '@/store/useProductStore';
 import { notFound, useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/useCartStore';
 import { ChevronLeft, Share2, ShieldCheck, Tag, Info, ChevronRight, Plus, Minus, ArrowRight, Search } from 'lucide-react';
@@ -12,13 +12,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const router = useRouter();
     // Resolve params promise
     const { id } = use(params);
-    const product = getProductById(id);
+    const { products, loading } = useProductStore();
+    const product = products.find(p => p.id === id);
 
     const { items, addItem, updateQuantity } = useCartStore();
     const qty = items.find(i => i.id === product?.id)?.quantity || 0;
 
     const [activeAccordion, setActiveAccordion] = useState<string | null>('offers');
 
+    if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div></div>;
     if (!product) return notFound();
 
     const discountPercentage = product.discountPrice ? Math.round(((product.price - product.discountPrice) / product.price) * 100) : null;

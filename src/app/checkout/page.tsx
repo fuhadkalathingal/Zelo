@@ -2,6 +2,7 @@
 
 import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useAgentStore } from '@/store/useAgentStore';
 import { ChevronLeft, MapPin, ArrowRight, Clock, ShieldCheck, CheckCircle2, CreditCard, Banknote } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -115,6 +116,10 @@ export default function CheckoutPage() {
             // Create a new Order Document in a root 'orders' collection
             const orderRef = doc(collection(db, 'orders'));
 
+            // Auto-assign to an active agent if any exist
+            const activeAgents = useAgentStore.getState().agents.filter(a => a.isActive);
+            const assignedAgent = activeAgents.length > 0 ? activeAgents[Math.floor(Math.random() * activeAgents.length)].agentId : null;
+
             const newOrder = {
                 orderId: orderRef.id,
                 userId: user.uid,
@@ -129,11 +134,11 @@ export default function CheckoutPage() {
                     unit: item.unit
                 })),
                 totalAmount: total,
-                status: 'Placed' as OrderStatus,
+                status: assignedAgent ? 'Batch Processing' : 'Placed' as OrderStatus,
                 batchType: batchInfo.title as BatchType,
                 paymentMethod: paymentMethod,
                 deliveryAddress: user.savedAddresses[0],
-                assignedAgentId: null,
+                assignedAgentId: assignedAgent,
                 deliveredAt: null,
                 createdAt: new Date().toISOString()
             };

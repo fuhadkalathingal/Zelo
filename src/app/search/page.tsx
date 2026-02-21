@@ -2,20 +2,21 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { MOCK_PRODUCTS } from '@/lib/data';
+import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
 
 export default function SearchPage() {
     const [query, setQuery] = useState('');
     const { items, addItem, updateQuantity } = useCartStore();
+    const { products } = useProductStore();
 
     const filteredProducts = useMemo(() => {
         if (!query.trim()) return [];
         const lowerQuery = query.toLowerCase();
-        return MOCK_PRODUCTS.filter(product =>
+        return products.filter(product =>
             product.name.toLowerCase().includes(lowerQuery)
         );
-    }, [query]);
+    }, [query, products]);
 
     return (
         <div className="min-h-screen bg-white p-4 pb-24">

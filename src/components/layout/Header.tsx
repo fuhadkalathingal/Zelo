@@ -6,11 +6,26 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Search, ShoppingBag, UserCircle2, MapPinned, Menu } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { useProductStore } from '@/store/useProductStore';
+import { useAgentStore } from '@/store/useAgentStore';
+import { useOrderStore } from '@/store/useOrderStore';
 
 export default function Header() {
     const pathname = usePathname();
     const cartItemCount = useCartStore((state) => state.getItemCount());
     const user = useAuthStore((state) => state.user);
+
+    useEffect(() => {
+        const unsubscribeProducts = useProductStore.getState().initializeProductsListener();
+        const unsubscribeAgents = useAgentStore.getState().initializeAgentsListener();
+        const unsubscribeOrders = useOrderStore.getState().initializeOrdersListener();
+        return () => {
+            unsubscribeProducts();
+            unsubscribeAgents();
+            unsubscribeOrders();
+        };
+    }, []);
 
     // Hide on admin routes
     if (pathname.startsWith('/admin') || pathname.startsWith('/agent')) return null;

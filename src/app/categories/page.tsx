@@ -1,17 +1,19 @@
 "use client";
 
 import { useMemo, useState } from 'react';
-import { CATEGORIES, PRODUCTS } from '@/lib/catalog';
+import { CATEGORIES } from '@/lib/data';
+import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
 import { Minus, Plus } from 'lucide-react';
 
 export default function CategoriesPage() {
     const [activeCategory, setActiveCategory] = useState<string>(CATEGORIES[0].name);
     const { items, addItem, updateQuantity } = useCartStore();
+    const { products, loading } = useProductStore();
 
     const filteredProducts = useMemo(
-        () => PRODUCTS.filter((product) => product.category === activeCategory),
-        [activeCategory],
+        () => products.filter((product) => product.category === activeCategory),
+        [activeCategory, products],
     );
 
     const getQty = (id: string) => items.find((item) => item.id === id)?.quantity || 0;

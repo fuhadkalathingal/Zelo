@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 
 export const metadata: Metadata = {
-  title: "Zelo | 10 Min Grocery Delivery",
+  title: "Zelo | Groceries at Lowest Prices",
   description: "Fresh groceries delivered right to your door in 10 minutes",
   icons: {
     icon: '/zelo.png',

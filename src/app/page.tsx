@@ -5,11 +5,13 @@ import { Plus, Minus, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import { MOCK_PRODUCTS, CATEGORIES } from '@/lib/data';
+import { CATEGORIES } from '@/lib/data';
 import { Product } from '@/types';
+import { useProductStore } from '@/store/useProductStore';
 
 export default function HomePage() {
   const { items, addItem, updateQuantity } = useCartStore();
+  const { products, loading } = useProductStore();
   const getQuantity = (id: string) => items.find(i => i.id === id)?.quantity || 0;
 
   const [batchName, setBatchName] = useState('LUNCH BATCH');
@@ -84,7 +86,7 @@ export default function HomePage() {
               {/* Delivery Meta */}
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Clock className="w-3 h-3 text-orange-500" strokeWidth={3} />
-                <span className="text-[9px] font-extrabold text-orange-500 uppercase tracking-wider">Order for 12:45 PM PM</span>
+                <span className="text-[9px] font-extrabold text-orange-500 uppercase tracking-wider">Order for 12:45 PM</span>
               </div>
 
               {/* Details */}
@@ -195,7 +197,7 @@ export default function HomePage() {
                 Clear Filter
               </button>
             </div>
-            {renderProducts(MOCK_PRODUCTS.filter(p =>
+            {renderProducts(products.filter(p =>
               p.category === activeCategory ||
               (activeCategory === 'Dairy, Bread & Eggs' && p.category.includes('Dairy')) ||
               (activeCategory === 'Atta, Rice, Oil & Dals' && p.category.includes('Atta'))
@@ -208,7 +210,13 @@ export default function HomePage() {
                 <span className="text-2xl">🏠</span> All Items
               </h2>
             </div>
-            {renderProducts(MOCK_PRODUCTS)}
+            {loading ? (
+              <div className="py-20 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+              </div>
+            ) : (
+              renderProducts(products)
+            )}
           </div>
         )}
       </div>

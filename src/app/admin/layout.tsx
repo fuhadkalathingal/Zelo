@@ -10,9 +10,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <ProtectedRoute allowedRoles={['admin']}>
-            <div className="flex min-h-screen bg-gray-50">
-                {/* Advanced Sidebar */}
-                <aside className="w-64 bg-emerald-950 text-white min-h-screen p-5 shadow-2xl hidden md:flex flex-col">
+            <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+
+                {/* Mobile Admin Header & Nav */}
+                <div className="md:hidden bg-emerald-950 flex flex-col sticky top-0 z-50">
+                    <div className="p-4 flex items-center gap-3">
+                        <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center font-black text-sm shadow-md text-white">Z</div>
+                        <div>
+                            <h2 className="font-extrabold text-lg tracking-tight leading-none text-white">Zelo Admin</h2>
+                        </div>
+                    </div>
+                    <div className="flex overflow-x-auto hide-scrollbar px-3 pb-3 gap-2">
+                        <Link href="/admin/orders" className={`whitespace-nowrap px-4 py-2 rounded-xl font-bold text-sm transition-all ${pathname === '/admin/orders' ? 'bg-emerald-800 text-white shadow-inner' : 'text-emerald-100/70 bg-emerald-900/50'}`}>
+                            Orders
+                        </Link>
+                        <Link href="/admin/products" className={`whitespace-nowrap px-4 py-2 rounded-xl font-bold text-sm transition-all ${pathname === '/admin/products' ? 'bg-emerald-800 text-white shadow-inner' : 'text-emerald-100/70 bg-emerald-900/50'}`}>
+                            Products
+                        </Link>
+                        <Link href="/admin/agents" className={`whitespace-nowrap px-4 py-2 rounded-xl font-bold text-sm transition-all ${pathname === '/admin/agents' ? 'bg-emerald-800 text-white shadow-inner' : 'text-emerald-100/70 bg-emerald-900/50'}`}>
+                            Agents
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Advanced Sidebar (Desktop) */}
+                <aside className="w-64 bg-emerald-950 text-white min-h-screen p-5 shadow-2xl hidden md:flex flex-col sticky top-0">
                     <div className="mb-10 flex items-center gap-3">
                         <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center font-black text-xl shadow-lg">Z</div>
                         <div>
@@ -34,7 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </nav>
                 </aside>
 
-                <main className="flex-1 overflow-x-hidden relative">
+                <main className="flex-1 overflow-x-hidden relative md:pb-0 mb-20 md:mb-0">
                     {children}
                 </main>
             </div>

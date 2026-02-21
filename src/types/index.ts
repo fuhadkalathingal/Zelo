@@ -37,6 +37,7 @@ export interface AgentProfile {
     vehicleNo: string;
     isActive: boolean;
     currentLocation?: string;
+    payoutPerDelivery?: number;
 }
 
 export interface Product {
@@ -71,6 +72,7 @@ export interface Order {
     status: OrderStatus;
     batchType: BatchType;
     deliveryAddress: Address;
+    deliveryPin?: string; // OTP for secure delivery
     createdAt: string;
     deliveredAt: string | null;
 }
