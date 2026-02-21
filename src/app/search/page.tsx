@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { Search, ChevronLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 import ProductImage from '@/components/ui/ProductImage';
 import { useProductStore } from '@/store/useProductStore';
 import { useCartStore } from '@/store/useCartStore';
@@ -61,48 +63,64 @@ export default function SearchPage() {
                             <p className="text-xs font-semibold text-gray-600 mt-1">Try searching for something else!</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                        <motion.div
+                            initial="hidden"
+                            animate="show"
+                            variants={{
+                                hidden: { opacity: 0 },
+                                show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+                            }}
+                            className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+                        >
                             {filteredProducts.map(product => {
                                 const qty = items.find(i => i.id === product.id)?.quantity || 0;
                                 return (
-                                    <Link href={`/product/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-md transition-shadow group">
-                                        <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform cursor-pointer overflow-hidden p-2">
-                                            <ProductImage imageUrl={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
-                                        </div>
-                                        <div>
-                                            <p className="font-extrabold text-sm text-gray-900 line-clamp-2 leading-tight">{product.name}</p>
-                                            <p className="text-[10px] font-bold text-gray-700 mt-0.5">{product.unit}</p>
-                                        </div>
-                                        <div className="mt-auto flex items-center justify-between pt-2">
-                                            <div className="flex flex-col">
-                                                {product.discountPrice ? (
-                                                    <>
-                                                        <span className="text-[10px] text-gray-600 line-through font-bold">₹{product.price}</span>
-                                                        <span className="font-black text-sm text-gray-900 tracking-tight">₹{product.discountPrice}</span>
-                                                    </>
+                                    <Link key={product.id} href={`/product/${product.id}`} passHref legacyBehavior>
+                                        <motion.a
+                                            variants={{
+                                                hidden: { opacity: 0, scale: 0.95 },
+                                                show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
+                                            }}
+                                            className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col gap-2 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all group"
+                                        >
+                                            <div className="bg-gray-50 aspect-square rounded-xl flex items-center justify-center text-4xl group-hover:bg-gray-100 transition-colors overflow-hidden p-2">
+                                                <ProductImage imageUrl={product.imageUrl} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                                            </div>
+                                            <div>
+                                                <p className="font-extrabold text-sm text-gray-900 line-clamp-2 leading-tight">{product.name}</p>
+                                                <p className="text-[10px] font-bold text-gray-700 mt-0.5">{product.unit}</p>
+                                            </div>
+                                            <div className="mt-auto flex items-center justify-between pt-2">
+                                                <div className="flex flex-col">
+                                                    {product.discountPrice ? (
+                                                        <>
+                                                            <span className="text-[10px] text-gray-600 line-through font-bold leading-none">₹{product.price}</span>
+                                                            <span className="font-black text-sm text-gray-900 tracking-tight leading-none">₹{product.discountPrice}</span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="font-black text-sm text-gray-900 tracking-tight">₹{product.price}</span>
+                                                    )}
+                                                </div>
+                                                {qty === 0 ? (
+                                                    <button
+                                                        onClick={(e) => { e.preventDefault(); addItem(product); }}
+                                                        className="bg-emerald-500 text-white w-7 h-7 rounded-lg flex items-center justify-center font-bold text-lg shadow-sm hover:bg-emerald-600 active:scale-95 transition-all"
+                                                    >
+                                                        +
+                                                    </button>
                                                 ) : (
-                                                    <span className="font-black text-sm text-gray-900 tracking-tight">₹{product.price}</span>
+                                                    <div className="flex items-center bg-emerald-500 text-white rounded-lg h-7 overflow-hidden" onClick={(e) => e.preventDefault()}>
+                                                        <button onClick={() => updateQuantity(product.id, qty - 1)} className="w-6 h-full flex items-center justify-center font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-colors">-</button>
+                                                        <span className="w-5 text-center text-xs font-bold">{qty}</span>
+                                                        <button onClick={() => updateQuantity(product.id, qty + 1)} className="w-6 h-full flex items-center justify-center font-bold hover:bg-emerald-600 active:bg-emerald-700 transition-colors">+</button>
+                                                    </div>
                                                 )}
                                             </div>
-                                            {qty === 0 ? (
-                                                <button
-                                                    onClick={(e) => { e.preventDefault(); addItem(product); }}
-                                                    className="bg-emerald-500 text-white w-7 h-7 rounded-lg flex items-center justify-center font-bold text-lg shadow-sm hover:bg-emerald-600 transition-colors"
-                                                >
-                                                    +
-                                                </button>
-                                            ) : (
-                                                <div className="flex items-center bg-emerald-500 text-white rounded-lg h-7 overflow-hidden" onClick={(e) => e.preventDefault()}>
-                                                    <button onClick={() => updateQuantity(product.id, qty - 1)} className="w-6 h-full flex items-center justify-center font-bold">-</button>
-                                                    <span className="w-5 text-center text-xs font-bold">{qty}</span>
-                                                    <button onClick={() => updateQuantity(product.id, qty + 1)} className="w-6 h-full flex items-center justify-center font-bold">+</button>
-                                                </div>
-                                            )}
-                                        </div>
+                                        </motion.a>
                                     </Link>
                                 );
                             })}
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             )}

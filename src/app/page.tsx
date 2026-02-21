@@ -4,6 +4,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { Plus, Minus, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 import { CATEGORIES } from '@/lib/data';
 import { Product } from '@/types';
@@ -63,18 +64,38 @@ export default function HomePage() {
   }, []);
 
   const renderProducts = (products: Product[]) => {
+    const container = {
+      hidden: { opacity: 0 },
+      show: {
+        opacity: 1,
+        transition: {
+          staggerChildren: 0.05
+        }
+      }
+    };
+
+    const item = {
+      hidden: { opacity: 0, y: 20 },
+      show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5"
+      >
         {products.map((prod) => {
           const qty = getQuantity(prod.id);
           const discountPercentage = prod.discountPrice ? Math.round(((prod.price - prod.discountPrice) / prod.price) * 100) : null;
 
           return (
-            <div key={prod.id} className="bg-white rounded-[20px] p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-200 flex flex-col relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
+            <motion.div variants={item} key={prod.id} className="bg-white rounded-[20px] p-3 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-200 flex flex-col relative group hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all">
 
               {/* Discount Badge */}
               {discountPercentage && (
-                <div className="absolute top-3 left-3 bg-emerald-700 text-white text-[9px] font-black px-1.5 py-0.5 rounded leading-none z-10 tracking-wider">
+                <div className="absolute top-3 left-3 bg-emerald-700 text-white text-[9px] font-black px-1.5 py-0.5 rounded leading-none z-10 tracking-wider shadow-sm">
                   {discountPercentage}% OFF
                 </div>
               )}
@@ -105,26 +126,26 @@ export default function HomePage() {
                 {qty === 0 ? (
                   <button
                     onClick={() => addItem(prod)}
-                    className="bg-white border border-emerald-500 text-emerald-600 font-bold text-sm px-6 py-2 rounded-xl shadow-sm hover:bg-emerald-50 transition-colors"
+                    className="bg-white border border-emerald-500 text-emerald-600 font-bold text-sm px-6 py-2 rounded-xl shadow-sm hover:bg-emerald-50 active:scale-95 transition-all"
                   >
                     ADD
                   </button>
                 ) : (
                   <div className="flex items-center bg-emerald-500 text-white rounded-xl shadow-sm h-10 overflow-hidden border border-emerald-600">
-                    <button onClick={() => updateQuantity(prod.id, qty - 1)} className="w-10 h-full flex items-center justify-center hover:bg-emerald-600 transition-colors">
+                    <button onClick={() => updateQuantity(prod.id, qty - 1)} className="w-10 h-full flex items-center justify-center hover:bg-emerald-600 active:bg-emerald-700 transition-colors">
                       <Minus className="w-4 h-4" strokeWidth={3} />
                     </button>
                     <span className="w-6 text-center font-extrabold text-sm">{qty}</span>
-                    <button onClick={() => updateQuantity(prod.id, qty + 1)} className="w-10 h-full flex items-center justify-center hover:bg-emerald-600 transition-colors">
+                    <button onClick={() => updateQuantity(prod.id, qty + 1)} className="w-10 h-full flex items-center justify-center hover:bg-emerald-600 active:bg-emerald-700 transition-colors">
                       <Plus className="w-4 h-4" strokeWidth={3} />
                     </button>
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     );
   };
 

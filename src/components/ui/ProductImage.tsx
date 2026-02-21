@@ -16,7 +16,7 @@ export default function ProductImage({ imageUrl, alt, className = '', emojiClass
   if (isRenderableImage(imageUrl)) {
     // Combine base responsive classes with whatever the parent passes
     const finalClassName = twMerge("w-full h-full object-contain p-2", className);
-    return <img src={imageUrl} alt={alt} className={finalClassName} />;
+    return <img src={imageUrl} alt={alt} className={finalClassName} loading="lazy" decoding="async" />;
   }
 
   return <span className={emojiClassName}>{imageUrl || '📦'}</span>;
